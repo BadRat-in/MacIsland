@@ -61,4 +61,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Contact
 
-For any questions or support, please reach out to [contact@rkinnovate.com](mailto:contact@rkinnovate.com).
+For any questions or support, please reach out to [contact@rkinnovate.com](mailto:ravindra@rkinnovate.com).
