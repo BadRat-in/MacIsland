@@ -6,7 +6,7 @@ Thank you for your interest in contributing to **MacIsland**! We welcome contrib
 
 ### 1. Reporting Issues
 
-If you find a bug or have a feature request, please open an issue in the [GitHub Issues](https://github.com/RKInnovate/MacIsland/issues) section.
+If you find a bug or have a feature request, please open an issue in the [GitHub Issues](https://github.com/BadRat-In/MacIsland/issues) section.
 
 ### 2. Forking the Repository
 

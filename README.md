@@ -1,27 +1,25 @@
 # MacIsland
 
-**MacIsland** is a dynamic island feature for macOS, inspired by the iOS dynamic island. It offers a sleek, interactive floating UI that integrates essential system controls like notifications, battery status, music control, volume control, and more.
+**MacIsland** is a dynamic island feature for macOS, inspired by the iOS dynamic island. It offers a sleek, interactive floating UI that integrates essential system controls like notifications, battery status, music control, and more.
 
 ## Features
 
 - [x] **Drag & Drop for AirDrop**: Easily drag and drop files to share via AirDrop.
 - [x] **DropTray for Temporary Storage**: Drag and drop files into a temporary storage area for 1 day (default), with options to change the storage duration.
+- [x] **Battery Status**: Keep track of your Mac's battery life with a glance.
 - [ ] **Notification Pop-ups**: Display real-time notifications in a dynamic, interactive interface.
-- [ ] **Battery Status**: Keep track of your Mac's battery life with a glance.
 - [ ] **Music Control**: Play, pause, and skip tracks with easy access music controls.
-- [ ] **Volume Control**: Adjust the system volume directly from the dynamic island.
-- [ ] **Window Navigation**: Quickly switch between different app windows without having to right-click.
 
 ## Preview
 
-TODO: After the project completion add the GIF here.
+![Preview](demo/preview.gif)
 
 ## Installation
 
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/RKInnovate/MacIsland.git
+   git clone https://github.com/BadRat-in/MacIsland.git
    ```
 
 2. **Open the project in Xcode:**
