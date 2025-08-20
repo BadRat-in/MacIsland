@@ -12,7 +12,6 @@ import LaunchAtLogin
 import SwiftUI
 
 class DynamicIslandViewModel: NSObject, ObservableObject {
-    
     var cancellables: Set<AnyCancellable> = []
     let inset: CGFloat
 

@@ -9,8 +9,12 @@ import SwiftUI
 
 struct DynamicIslandView: View {
     @StateObject var vm: DynamicIslandViewModel
+    @ObservedObject var batteryManager: BatteryManager
 
     @State var dropTargeting: Bool = false
+    @State private var showChargingPop = false
+    @State private var isCharging: Bool = false
+    @State private var chargingPercentage = 0
 
     var notchSize: CGSize {
         switch vm.status {
@@ -50,7 +54,7 @@ struct DynamicIslandView: View {
                 if vm.status == .opened {
                     VStack(spacing: vm.spacing) {
                         DynamicIslandHeaderView(vm: vm)
-                        DynamicIslandContentView(vm: vm)
+                        DynamicIslandContentView(vm: vm, batteryManager: batteryManager)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
                     .padding(vm.spacing)
@@ -65,6 +69,29 @@ struct DynamicIslandView: View {
                     with: .offset(y: -vm.notchOpenedSize.height / 2)
                 ).animation(vm.animation)
             )
+            
+            if showChargingPop {
+                ChargingPopView(percentage: chargingPercentage, charging: isCharging)
+                    .offset(y: 40)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .zIndex(1)
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .batteryChargeStateChanged)) { notif in
+            if vm.status == .opened { return }
+            
+            isCharging = notif.object as? Bool ?? false
+            print("📩 Received charging: \(notif)")
+            chargingPercentage = batteryManager.percentage
+            withAnimation(.spring()) {
+                showChargingPop = true
+            }
+            // auto-dismiss after 2 sec
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+                withAnimation(.spring()) {
+                    showChargingPop = false
+                }
+            }
         }
         .background(dragDetector)
         .animation(vm.animation, value: vm.status)

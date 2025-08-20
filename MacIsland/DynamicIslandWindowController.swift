@@ -11,6 +11,7 @@ private let notchHeight: CGFloat = 200
 
 class DynamicIslandWindowController: NSWindowController {
     var vm: DynamicIslandViewModel?
+    var batteryManager: BatteryManager?
     weak var screen: NSScreen?
 
     var openAfterCreate: Bool = false
@@ -24,7 +25,9 @@ class DynamicIslandWindowController: NSWindowController {
 
         let vm = DynamicIslandViewModel(inset: notchSize == .zero ? 0 : -4)
         self.vm = vm
-        contentViewController = DynamicIslandViewController(vm)
+        let batteryManager = BatteryManager()
+        self.batteryManager = batteryManager
+        contentViewController = DynamicIslandViewController(vm, batteryManager: batteryManager)
 
         if notchSize == .zero {
             notchSize = .init(width: 150, height: 28)

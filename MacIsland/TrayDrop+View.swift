@@ -85,9 +85,12 @@ struct TrayView: View {
 }
 
 #Preview {
-    DynamicIslandContentView(vm: .init())
-        .padding()
-        .frame(width: 550, height: 150, alignment: .center)
-        .background(.black)
-        .preferredColorScheme(.dark)
+    DynamicIslandContentView(
+        vm: DynamicIslandViewModel(),
+        batteryManager: BatteryManager()
+    )
+    .padding()
+    .frame(width: 550, height: 150, alignment: Alignment.center)
+    .background(Color.black)
+    .preferredColorScheme(ColorScheme.dark)
 }

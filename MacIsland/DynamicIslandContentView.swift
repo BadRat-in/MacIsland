@@ -12,6 +12,7 @@ import UniformTypeIdentifiers
 
 struct DynamicIslandContentView: View {
     @StateObject var vm: DynamicIslandViewModel
+    @ObservedObject var batteryManager: BatteryManager
     
     @State var hover: Bool = false
     @State var trigger: UUID = .init()
@@ -22,9 +23,11 @@ struct DynamicIslandContentView: View {
             switch vm.contentType {
             case .normal:
                 HStack(spacing: vm.spacing) {
-//                    NowPlayingView()
                     AirDropView(vm: vm)
                     TrayView(vm: vm)
+                    if batteryManager.hasBattery() {
+                        BatteryView(batteryManager: batteryManager)
+                    }
                     
                 }
                 .transition(.scale(scale: 0.8).combined(with: .opacity))

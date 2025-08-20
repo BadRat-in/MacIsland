@@ -28,15 +28,12 @@
 		57680E302C6789EF000233B9 /* PublishedPersist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57680E202C6789EE000233B9 /* PublishedPersist.swift */; };
 		57680E312C6789EF000233B9 /* EventMonitors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57680E212C6789EE000233B9 /* EventMonitors.swift */; };
 		57680E322C6789EF000233B9 /* TrayDrop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57680E222C6789EE000233B9 /* TrayDrop.swift */; };
-		57680E342C678A0D000233B9 /* MacIsland.plist in Resources */ = {isa = PBXBuildFile; fileRef = 57680E332C678A0D000233B9 /* MacIsland.plist */; };
+		57680E342C678A0D000233B9 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 57680E332C678A0D000233B9 /* Info.plist */; };
 		57680E462C678A1F000233B9 /* ColorButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57680E352C678A1F000233B9 /* ColorButtonView.swift */; };
 		57680E472C678A1F000233B9 /* DynamicIslandSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57680E362C678A1F000233B9 /* DynamicIslandSettingsView.swift */; };
 		57680E482C678A1F000233B9 /* Language.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57680E372C678A1F000233B9 /* Language.swift */; };
 		57680E492C678A1F000233B9 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 57680E382C678A1F000233B9 /* Localizable.xcstrings */; };
-		57680E4A2C678A1F000233B9 /* NowPlaying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57680E392C678A1F000233B9 /* NowPlaying.swift */; };
-		57680E4B2C678A1F000233B9 /* PlaybackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57680E3A2C678A1F000233B9 /* PlaybackController.swift */; };
 		57680E4C2C678A1F000233B9 /* DynamicIslandViewModel+Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57680E3B2C678A1F000233B9 /* DynamicIslandViewModel+Events.swift */; };
-		57680E4D2C678A1F000233B9 /* NowPlayingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57680E3C2C678A1F000233B9 /* NowPlayingView.swift */; };
 		57680E4E2C678A1F000233B9 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 57680E3D2C678A1F000233B9 /* InfoPlist.xcstrings */; };
 		57680E4F2C678A1F000233B9 /* DynamicIslandContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57680E3E2C678A1F000233B9 /* DynamicIslandContentView.swift */; };
 		57680E502C678A1F000233B9 /* DynamicIslandViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57680E3F2C678A1F000233B9 /* DynamicIslandViewModel.swift */; };
@@ -54,6 +51,10 @@
 		57680E652C678A87000233B9 /* HashTreeCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 57680E642C678A87000233B9 /* HashTreeCollections */; };
 		57680E672C678A87000233B9 /* HeapModule in Frameworks */ = {isa = PBXBuildFile; productRef = 57680E662C678A87000233B9 /* HeapModule */; };
 		57680E6A2C678A98000233B9 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 57680E692C678A98000233B9 /* LaunchAtLogin */; };
+		D3FE94CA2E53147800AE9BA4 /* BatteryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3FE94C92E53146800AE9BA4 /* BatteryManager.swift */; };
+		D3FE94CC2E53149C00AE9BA4 /* Battery+View.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3FE94CB2E53149300AE9BA4 /* Battery+View.swift */; };
+		D3FE94CE2E531DA000AE9BA4 /* ChargingPopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3FE94CD2E531D9700AE9BA4 /* ChargingPopView.swift */; };
+		D3FE94D02E531E1B00AE9BA4 /* Ext+Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3FE94CF2E531E1800AE9BA4 /* Ext+Notification.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -99,15 +100,12 @@
 		57680E202C6789EE000233B9 /* PublishedPersist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublishedPersist.swift; sourceTree = "<group>"; };
 		57680E212C6789EE000233B9 /* EventMonitors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventMonitors.swift; sourceTree = "<group>"; };
 		57680E222C6789EE000233B9 /* TrayDrop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrayDrop.swift; sourceTree = "<group>"; };
-		57680E332C678A0D000233B9 /* MacIsland.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = MacIsland.plist; sourceTree = "<group>"; };
+		57680E332C678A0D000233B9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		57680E352C678A1F000233B9 /* ColorButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorButtonView.swift; sourceTree = "<group>"; };
 		57680E362C678A1F000233B9 /* DynamicIslandSettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicIslandSettingsView.swift; sourceTree = "<group>"; };
 		57680E372C678A1F000233B9 /* Language.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Language.swift; sourceTree = "<group>"; };
 		57680E382C678A1F000233B9 /* Localizable.xcstrings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
-		57680E392C678A1F000233B9 /* NowPlaying.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NowPlaying.swift; sourceTree = "<group>"; };
-		57680E3A2C678A1F000233B9 /* PlaybackController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaybackController.swift; sourceTree = "<group>"; };
 		57680E3B2C678A1F000233B9 /* DynamicIslandViewModel+Events.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DynamicIslandViewModel+Events.swift"; sourceTree = "<group>"; };
-		57680E3C2C678A1F000233B9 /* NowPlayingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NowPlayingView.swift; sourceTree = "<group>"; };
 		57680E3D2C678A1F000233B9 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		57680E3E2C678A1F000233B9 /* DynamicIslandContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicIslandContentView.swift; sourceTree = "<group>"; };
 		57680E3F2C678A1F000233B9 /* DynamicIslandViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicIslandViewModel.swift; sourceTree = "<group>"; };
@@ -117,6 +115,10 @@
 		57680E432C678A1F000233B9 /* DynamicIslandMenuView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicIslandMenuView.swift; sourceTree = "<group>"; };
 		57680E442C678A1F000233B9 /* DynamicIslandHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicIslandHeaderView.swift; sourceTree = "<group>"; };
 		57680E452C678A1F000233B9 /* DynamicIslandWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicIslandWindow.swift; sourceTree = "<group>"; };
+		D3FE94C92E53146800AE9BA4 /* BatteryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryManager.swift; sourceTree = "<group>"; };
+		D3FE94CB2E53149300AE9BA4 /* Battery+View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Battery+View.swift"; sourceTree = "<group>"; };
+		D3FE94CD2E531D9700AE9BA4 /* ChargingPopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChargingPopView.swift; sourceTree = "<group>"; };
+		D3FE94CF2E531E1800AE9BA4 /* Ext+Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Ext+Notification.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -175,6 +177,7 @@
 		57680DE72C6789D8000233B9 /* MacIsland */ = {
 			isa = PBXGroup;
 			children = (
+				D3FE94CD2E531D9700AE9BA4 /* ChargingPopView.swift */,
 				57680E352C678A1F000233B9 /* ColorButtonView.swift */,
 				57680E3E2C678A1F000233B9 /* DynamicIslandContentView.swift */,
 				57680E442C678A1F000233B9 /* DynamicIslandHeaderView.swift */,
@@ -189,16 +192,16 @@
 				57680E3D2C678A1F000233B9 /* InfoPlist.xcstrings */,
 				57680E372C678A1F000233B9 /* Language.swift */,
 				57680E382C678A1F000233B9 /* Localizable.xcstrings */,
-				57680E392C678A1F000233B9 /* NowPlaying.swift */,
-				57680E3C2C678A1F000233B9 /* NowPlayingView.swift */,
-				57680E3A2C678A1F000233B9 /* PlaybackController.swift */,
-				57680E332C678A0D000233B9 /* MacIsland.plist */,
+				57680E332C678A0D000233B9 /* Info.plist */,
 				57680E182C6789EE000233B9 /* AirDrop.swift */,
 				57680E1F2C6789EE000233B9 /* AirDrop+View.swift */,
+				D3FE94C92E53146800AE9BA4 /* BatteryManager.swift */,
+				D3FE94CB2E53149300AE9BA4 /* Battery+View.swift */,
 				57680E1B2C6789EE000233B9 /* AppDelegate.swift */,
 				57680E132C6789EE000233B9 /* EventMonitor.swift */,
 				57680E212C6789EE000233B9 /* EventMonitors.swift */,
 				57680E192C6789EE000233B9 /* Ext+FileProvider.swift */,
+				D3FE94CF2E531E1800AE9BA4 /* Ext+Notification.swift */,
 				57680E142C6789EE000233B9 /* Ext+NSAlert.swift */,
 				57680E1E2C6789EE000233B9 /* Ext+NSImage.swift */,
 				57680E162C6789EE000233B9 /* Ext+NSScreen.swift */,
@@ -363,7 +366,7 @@
 			files = (
 				57680DF02C6789D9000233B9 /* Preview Assets.xcassets in Resources */,
 				57680E4E2C678A1F000233B9 /* InfoPlist.xcstrings in Resources */,
-				57680E342C678A0D000233B9 /* MacIsland.plist in Resources */,
+				57680E342C678A0D000233B9 /* Info.plist in Resources */,
 				57680E492C678A1F000233B9 /* Localizable.xcstrings in Resources */,
 				57680DED2C6789D9000233B9 /* Assets.xcassets in Resources */,
 			);
@@ -395,7 +398,6 @@
 				57680E2F2C6789EF000233B9 /* AirDrop+View.swift in Sources */,
 				57680E2E2C6789EF000233B9 /* Ext+NSImage.swift in Sources */,
 				57680E512C678A1F000233B9 /* DynamicIslandWindowController.swift in Sources */,
-				57680E4D2C678A1F000233B9 /* NowPlayingView.swift in Sources */,
 				57680E4C2C678A1F000233B9 /* DynamicIslandViewModel+Events.swift in Sources */,
 				57680E2B2C6789EF000233B9 /* AppDelegate.swift in Sources */,
 				57680E522C678A1F000233B9 /* DynamicIslandView.swift in Sources */,
@@ -406,14 +408,15 @@
 				57680E472C678A1F000233B9 /* DynamicIslandSettingsView.swift in Sources */,
 				57680E282C6789EE000233B9 /* AirDrop.swift in Sources */,
 				57680E252C6789EE000233B9 /* main.swift in Sources */,
+				D3FE94CA2E53147800AE9BA4 /* BatteryManager.swift in Sources */,
 				57680E242C6789EE000233B9 /* Ext+NSAlert.swift in Sources */,
-				57680E4A2C678A1F000233B9 /* NowPlaying.swift in Sources */,
 				57680E542C678A1F000233B9 /* DynamicIslandMenuView.swift in Sources */,
 				57680E292C6789EF000233B9 /* Ext+FileProvider.swift in Sources */,
 				57680E2D2C6789EF000233B9 /* Ext+URL.swift in Sources */,
+				D3FE94D02E531E1B00AE9BA4 /* Ext+Notification.swift in Sources */,
 				57680E272C6789EE000233B9 /* TrayDrop+DropItemView.swift in Sources */,
-				57680E4B2C678A1F000233B9 /* PlaybackController.swift in Sources */,
 				57680E302C6789EF000233B9 /* PublishedPersist.swift in Sources */,
+				D3FE94CC2E53149C00AE9BA4 /* Battery+View.swift in Sources */,
 				57680E562C678A1F000233B9 /* DynamicIslandWindow.swift in Sources */,
 				57680E262C6789EE000233B9 /* Ext+NSScreen.swift in Sources */,
 				57680E502C678A1F000233B9 /* DynamicIslandViewModel.swift in Sources */,
@@ -421,6 +424,7 @@
 				57680E532C678A1F000233B9 /* DynamicIslandViewController.swift in Sources */,
 				57680E462C678A1F000233B9 /* ColorButtonView.swift in Sources */,
 				57680E2A2C6789EF000233B9 /* TrayDrop+View.swift in Sources */,
+				D3FE94CE2E531DA000AE9BA4 /* ChargingPopView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -583,12 +587,13 @@
 				CODE_SIGN_ENTITLEMENTS = MacIsland/MacIsland.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"MacIsland/Preview Content\"";
 				DEVELOPMENT_TEAM = 86Y9L37F45;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MacIsland/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MacIsland;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -596,7 +601,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rkinnovate.MacIsland;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -612,12 +617,13 @@
 				CODE_SIGN_ENTITLEMENTS = MacIsland/MacIsland.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"MacIsland/Preview Content\"";
 				DEVELOPMENT_TEAM = 86Y9L37F45;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MacIsland/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MacIsland;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -625,7 +631,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rkinnovate.MacIsland;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

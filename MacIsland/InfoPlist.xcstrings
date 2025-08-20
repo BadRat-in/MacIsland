@@ -10,18 +10,6 @@
             "state" : "new",
             "value" : "MacIsland"
           }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Isla Mac"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Île Mac"
-          }
         }
       }
     },
@@ -34,41 +22,28 @@
             "state" : "new",
             "value" : "MacIsland"
           }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "MacIsland"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "MacIsland"
-          }
         }
       }
     },
     "NSHumanReadableCopyright" : {
       "comment" : "Copyright (human-readable)",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : "Copyright © 2025 Ravindra Singh. All rights reserved."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Copyright © 2024 Ravindra Singh. Todos los derechos reservados."
+            "value" : "Copyright © 2025 Ravindra Singh. Todos los derechos reservados."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Copyright © 2024 Ravindra Singh. Tous droits réservés."
+            "value" : "Copyright © 2025 Ravindra Singh. Tous droits réservés."
           }
         }
       }

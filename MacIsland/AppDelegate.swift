@@ -12,7 +12,7 @@ import LaunchAtLogin
 class AppDelegate: NSObject, NSApplicationDelegate {
     var isFirstOpen = true
     var isLaunchedAtLogin = false
-    var mainWindowController: DynamicIslandWindowController?
+    var mainWindowController: [DynamicIslandWindowController] = []
 
     var timer: Timer?
 
@@ -45,21 +45,32 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         try? FileManager.default.removeItem(at: pidFile)
     }
 
-    func findScreenFitsOurNeeds() -> NSScreen? {
-        if let screen = NSScreen.buildin, screen.notchSize != .zero { return screen }
-        return .main
+    func findScreenFitsOurNeeds() -> [NSScreen?] {
+        var screens: [NSScreen?] = []
+        if let screen = NSScreen.buildin, screen.notchSize != .zero { screens.append(screen) }
+        screens.append(NSScreen.main)
+        
+        for screen in NSScreen.screens {
+            if screens.contains(screen) { continue }
+            screens.append(screen)
+        }
+        return screens
     }
 
     @objc func rebuildApplicationWindows() {
         defer { isFirstOpen = false }
-        if let mainWindowController {
-            mainWindowController.destroy()
+        mainWindowController.forEach {
+            $0.destroy()
         }
-        mainWindowController = nil
-        guard let mainScreen = findScreenFitsOurNeeds() else { return }
-        mainWindowController = .init(screen: mainScreen)
-        if isFirstOpen, !isLaunchedAtLogin {
-            mainWindowController?.openAfterCreate = true
+
+        for s in findScreenFitsOurNeeds() {
+            guard let screen = s else { continue }
+            print("Notch detected on \(String(describing: screen.notchSize))")
+            let controller = DynamicIslandWindowController(screen: screen)
+            mainWindowController.append(controller)
+            if screen.notchSize != .zero , NSScreen.buildin == screen, isFirstOpen, !isLaunchedAtLogin {
+                controller.openAfterCreate = true
+            }
         }
     }
 
@@ -75,7 +86,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func makeKeyAndVisibleIfNeeded() {
-        guard let controller = mainWindowController,
+        guard let controller = mainWindowController.first,
               let window = controller.window,
               let vm = controller.vm,
               vm.status == .opened
@@ -84,7 +95,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationShouldHandleReopen(_: NSApplication, hasVisibleWindows _: Bool) -> Bool {
-        guard let controller = mainWindowController,
+        guard let controller = mainWindowController.first,
               let vm = controller.vm
         else { return true }
         vm.notchOpen(.click)
