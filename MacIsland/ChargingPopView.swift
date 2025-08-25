@@ -28,16 +28,6 @@ struct ChargingPopView: View {
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
-        .background(
-            NotchBackgroundMask(
-                size: CGSize(
-                    width: 270 + 8 * 2,
-                    height: 33
-                ),
-                cornerRadius: 8,
-                spacing: 4
-            )
-        )
         .preferredColorScheme(.dark)
         .shadow(radius: 4)
         .frame(maxWidth: 270) // keep it notch-like

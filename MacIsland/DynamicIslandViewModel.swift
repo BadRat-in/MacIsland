@@ -31,6 +31,7 @@ class DynamicIslandViewModel: NSObject, ObservableObject {
         blendDuration: 0.125
     )
     let notchOpenedSize: CGSize = .init(width: 600, height: 160)
+    let notchChargingSize: CGSize = .init(width: 275, height: 32.5)
     let dropDetectorRange: CGFloat = 32
 
     enum Status: String, Codable, Hashable, Equatable {
@@ -60,6 +61,15 @@ class DynamicIslandViewModel: NSObject, ObservableObject {
             y: screenRect.origin.y + screenRect.height - notchOpenedSize.height,
             width: notchOpenedSize.width,
             height: notchOpenedSize.height
+        )
+    }
+    
+    var notchChargingRect: CGRect {
+        .init(
+            x: screenRect.origin.x + (screenRect.width - notchChargingSize.width) / 2,
+            y: screenRect.origin.y + screenRect.height - notchChargingSize.height,
+            width: notchChargingSize.width,
+            height: notchChargingSize.height
         )
     }
 
