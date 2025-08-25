@@ -1,64 +1,94 @@
 # MacIsland
 
-**MacIsland** is a dynamic island feature for macOS, inspired by the iOS dynamic island. It offers a sleek, interactive floating UI that integrates essential system controls like notifications, battery status, music control, and more.
+**MacIsland** brings the **Dynamic Island experience to macOS**, inspired by iOS.  
+It’s a sleek, interactive floating UI that integrates system essentials like **AirDrop, temporary file storage, and battery insights**, with upcoming support for notifications and music control.
 
-## Features
+> ⚠️ **Note:** MacIsland is currently in **pre-release (experimental)**. Expect frequent updates and missing features.
 
-- [x] **Drag & Drop for AirDrop**: Easily drag and drop files to share via AirDrop.
-- [x] **DropTray for Temporary Storage**: Drag and drop files into a temporary storage area for 1 day (default), with options to change the storage duration.
-- [x] **Battery Status**: Keep track of your Mac's battery life with a glance.
-- [ ] **Notification Pop-ups**: Display real-time notifications in a dynamic, interactive interface.
-- [ ] **Music Control**: Play, pause, and skip tracks with easy access music controls.
+---
 
-## Preview
+## ✨ Features
+
+- [x] **Drag & Drop for AirDrop** – Easily drag and drop files to share via AirDrop.
+- [x] **DropTray (Temporary Storage)** – Drop files into a tray that stores them for **1 day (default)**, with customizable duration.
+- [x] **Battery Status** – Instantly check your Mac’s battery percentage in the island.
+- [ ] **Music Control** – Play, pause, and skip tracks with built-in media controls. *(Coming Soon)*
+
+---
+
+## 🎥 Preview
 
 ![Preview](demo/preview.gif)
 
-## Installation
+---
 
-1. **Clone the repository:**
+## 🚀 Installation
 
-   ```bash
-   git clone https://github.com/BadRat-in/MacIsland.git
-   ```
+The **easiest way** to try MacIsland is by downloading the latest pre-built release:
 
-2. **Open the project in Xcode:**
+👉 [Download Latest Release](https://github.com/BadRat-in/MacIsland/releases)
 
-   ```bash
-   cd MacIsland
-   open MacIsland.xcodeproj
-   ```
+1. Unzip the downloaded file.
+2. Drag **MacIsland.app** into your **Applications** folder.
+3. Open it, and the island will appear at the top of your desktop.
 
-3. **Build and Run:**
-   - Select the appropriate target device (Mac) and hit `Run` to start using MacIsland.
+---
 
-## Usage
+## 🛠️ Building from Source
 
-Once installed, MacIsland will appear as a floating interactive UI on your macOS desktop.
+If you prefer to build manually:
 
-- **Expand/Collapse**: Click on the island to expand or collapse it.
-- **Custom Interactions**: Interact with various system controls like notifications, music, volume, and more.
+```bash
+git clone https://github.com/BadRat-in/MacIsland.git
+cd MacIsland
+open MacIsland.xcodeproj
+````
 
-## Requirements
+- Select the Mac target in Xcode and hit **Run**.
+
+⚠️ If you encounter missing file errors (e.g., `NowPlaying.swift`), remove music-related references.
+Music support isn’t included yet — use the pre-built release if you just want to test.
+
+---
+
+## 📌 Usage
+
+- **Expand / Collapse** → Click the island to toggle.
+- **AirDrop** → Drag files into the island to quickly share.
+- **DropTray** → Temporarily store files by dragging them onto the tray.
+- **Battery Status** → Battery icon + percentage appears when charging/discharging.
+- *(Future)* Music playback.
+
+---
+
+## ✅ Requirements
 
 - **macOS**: 11.0 (Big Sur) or later
-- **Xcode**: 12.0 or later
+- **Xcode**: 14.0 or later (for building from source)
 - **Swift**: 5.0 or later
 
-## Contribute
+---
 
-If you want to contribute to MacIsland, feel free to submit a pull request or open an issue for any bugs or feature requests.
+## 🤝 Contribute
 
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature-branch`).
-3. Commit your changes (`git commit -m "Add some feature"`).
-4. Push to the branch (`git push origin feature-branch`).
-5. Open a pull request.
+Want to improve MacIsland?
 
-## License
+1. Fork this repo
+2. Create a feature branch (`git checkout -b feature-branch`)
+3. Commit your changes (`git commit -m "Add some feature"`)
+4. Push (`git push origin feature-branch`)
+5. Open a Pull Request 🎉
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+---
 
-## Contact
+## 📄 License
 
-For any questions or support, please reach out to [ravindra@rkinnovate.com](mailto:ravindra@rkinnovate.com).
+Licensed under the **MPL-2.0 License**.
+See [LICENSE](LICENSE) for details.
+
+---
+
+## 📬 Contact
+
+Created by **Ravindra Singh**.
+Questions / suggestions → [ravindra@rkinnovate.com](mailto:ravindra@rkinnovate.com)
