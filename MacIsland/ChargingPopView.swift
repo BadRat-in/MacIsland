@@ -8,31 +8,40 @@
 import SwiftUI
 
 struct ChargingPopView: View {
-    let percentage: Int
-    let charging: Bool
+    @ObservedObject var batteryManager: BatteryManager
     
     var body: some View {
-        HStack(spacing: 8) {
-            batteryIcon(for: percentage,
-                        charging: charging)
-                .foregroundColor(charging ? .green : .primary)
+        HStack {
+            // Left side: Battery Icon
+            batteryIcon(for: batteryManager.percentage, charging: batteryManager.isCharging)
+                .foregroundColor(batteryManager.isCharging ? .green : .primary)
                 .font(.title2)
+                .frame(alignment: .leading)
             
-            if charging {
-                Text("\(percentage)% " + NSLocalizedString("Charging", comment: ""))
-                    .font(.headline)
-                    .foregroundColor(.primary)
-            } else {
-                Text("\(percentage)% " + NSLocalizedString("Charged", comment: ""))
-                    .font(.headline)
-                    .foregroundColor(.primary)
-            }
+            Spacer()
+
+            // Right side: Percentage + Text
+            Text("\(batteryManager.percentage)%")
+                .font(.headline)
+                .foregroundColor(.primary)
+                .frame(alignment: .trailing)
         }
-        .padding(.horizontal, 14)
+        .padding(.horizontal, 10)
         .padding(.vertical, 8)
-        .background(.ultraThinMaterial)
-        .clipShape(Capsule())
-        .shadow(radius: 5)
+        .background(
+            NotchBackgroundMask(
+                size: CGSize(
+                    width: 270 + 8 * 2,
+                    height: 33
+                ),
+                cornerRadius: 8,
+                spacing: 4
+            )
+        )
+        .preferredColorScheme(.dark)
+        .shadow(radius: 4)
+        .frame(maxWidth: 270) // keep it notch-like
+        .animation(.spring(response: 0.4, dampingFraction: 0.8), value: batteryManager.percentage)
     }
     
     
@@ -61,4 +70,8 @@ struct ChargingPopView: View {
             }
         }
     }
+}
+
+#Preview {
+    ChargingPopView(batteryManager: BatteryManager())
 }

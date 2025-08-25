@@ -51,6 +51,8 @@
 		57680E652C678A87000233B9 /* HashTreeCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 57680E642C678A87000233B9 /* HashTreeCollections */; };
 		57680E672C678A87000233B9 /* HeapModule in Frameworks */ = {isa = PBXBuildFile; productRef = 57680E662C678A87000233B9 /* HeapModule */; };
 		57680E6A2C678A98000233B9 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 57680E692C678A98000233B9 /* LaunchAtLogin */; };
+		D3C19F052E5BE764008223DE /* NotchBackgroundMask.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3C19F042E5BE758008223DE /* NotchBackgroundMask.swift */; };
+		D3C19F0B2E5C00D4008223DE /* AnyTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3C19F0A2E5C00CD008223DE /* AnyTransition.swift */; };
 		D3FE94CA2E53147800AE9BA4 /* BatteryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3FE94C92E53146800AE9BA4 /* BatteryManager.swift */; };
 		D3FE94CC2E53149C00AE9BA4 /* Battery+View.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3FE94CB2E53149300AE9BA4 /* Battery+View.swift */; };
 		D3FE94CE2E531DA000AE9BA4 /* ChargingPopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3FE94CD2E531D9700AE9BA4 /* ChargingPopView.swift */; };
@@ -115,6 +117,8 @@
 		57680E432C678A1F000233B9 /* DynamicIslandMenuView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicIslandMenuView.swift; sourceTree = "<group>"; };
 		57680E442C678A1F000233B9 /* DynamicIslandHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicIslandHeaderView.swift; sourceTree = "<group>"; };
 		57680E452C678A1F000233B9 /* DynamicIslandWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicIslandWindow.swift; sourceTree = "<group>"; };
+		D3C19F042E5BE758008223DE /* NotchBackgroundMask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchBackgroundMask.swift; sourceTree = "<group>"; };
+		D3C19F0A2E5C00CD008223DE /* AnyTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyTransition.swift; sourceTree = "<group>"; };
 		D3FE94C92E53146800AE9BA4 /* BatteryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryManager.swift; sourceTree = "<group>"; };
 		D3FE94CB2E53149300AE9BA4 /* Battery+View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Battery+View.swift"; sourceTree = "<group>"; };
 		D3FE94CD2E531D9700AE9BA4 /* ChargingPopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChargingPopView.swift; sourceTree = "<group>"; };
@@ -177,6 +181,8 @@
 		57680DE72C6789D8000233B9 /* MacIsland */ = {
 			isa = PBXGroup;
 			children = (
+				D3C19F0A2E5C00CD008223DE /* AnyTransition.swift */,
+				D3C19F042E5BE758008223DE /* NotchBackgroundMask.swift */,
 				D3FE94CD2E531D9700AE9BA4 /* ChargingPopView.swift */,
 				57680E352C678A1F000233B9 /* ColorButtonView.swift */,
 				57680E3E2C678A1F000233B9 /* DynamicIslandContentView.swift */,
@@ -400,6 +406,7 @@
 				57680E512C678A1F000233B9 /* DynamicIslandWindowController.swift in Sources */,
 				57680E4C2C678A1F000233B9 /* DynamicIslandViewModel+Events.swift in Sources */,
 				57680E2B2C6789EF000233B9 /* AppDelegate.swift in Sources */,
+				D3C19F052E5BE764008223DE /* NotchBackgroundMask.swift in Sources */,
 				57680E522C678A1F000233B9 /* DynamicIslandView.swift in Sources */,
 				57680E4F2C678A1F000233B9 /* DynamicIslandContentView.swift in Sources */,
 				57680E552C678A1F000233B9 /* DynamicIslandHeaderView.swift in Sources */,
@@ -423,6 +430,7 @@
 				57680E2C2C6789EF000233B9 /* TrayDrop+DropItem.swift in Sources */,
 				57680E532C678A1F000233B9 /* DynamicIslandViewController.swift in Sources */,
 				57680E462C678A1F000233B9 /* ColorButtonView.swift in Sources */,
+				D3C19F0B2E5C00D4008223DE /* AnyTransition.swift in Sources */,
 				57680E2A2C6789EF000233B9 /* TrayDrop+View.swift in Sources */,
 				D3FE94CE2E531DA000AE9BA4 /* ChargingPopView.swift in Sources */,
 			);

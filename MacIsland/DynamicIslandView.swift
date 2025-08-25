@@ -13,8 +13,6 @@ struct DynamicIslandView: View {
 
     @State var dropTargeting: Bool = false
     @State private var showChargingPop = false
-    @State private var isCharging: Bool = false
-    @State private var chargingPercentage = 0
 
     var notchSize: CGSize {
         switch vm.status {
@@ -71,25 +69,26 @@ struct DynamicIslandView: View {
             )
             
             if showChargingPop {
-                ChargingPopView(percentage: chargingPercentage, charging: isCharging)
-                    .offset(y: 40)
-                    .transition(.move(edge: .top).combined(with: .opacity))
+                ChargingPopView(batteryManager: batteryManager)
+                    .transition(.expandWidth.combined(with: .opacity))
                     .zIndex(1)
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .batteryChargeStateChanged)) { notif in
             if vm.status == .opened { return }
             
-            isCharging = notif.object as? Bool ?? false
+            let isCharging: Bool = notif.object as? Bool ?? false
             print("📩 Received charging: \(notif)")
-            chargingPercentage = batteryManager.percentage
-            withAnimation(.spring()) {
-                showChargingPop = true
-            }
-            // auto-dismiss after 2 sec
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+            
+            if (isCharging) {
                 withAnimation(.spring()) {
-                    showChargingPop = false
+                    showChargingPop = true
+                }
+            } else {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    withAnimation(.spring()) {
+                        showChargingPop = false
+                    }
                 }
             }
         }
@@ -102,7 +101,7 @@ struct DynamicIslandView: View {
     var notch: some View {
         Rectangle()
             .foregroundStyle(.black)
-            .mask(notchBackgroundMaskGroup)
+            .mask(NotchBackgroundMask(size: notchSize, cornerRadius: notchCornerRadius, spacing: vm.spacing))
             .frame(
                 width: notchSize.width + notchCornerRadius * 2,
                 height: notchSize.height
@@ -111,55 +110,6 @@ struct DynamicIslandView: View {
                 color: .black.opacity(([.opened, .popping].contains(vm.status)) ? 1 : 0),
                 radius: 16
             )
-    }
-
-    var notchBackgroundMaskGroup: some View {
-        Rectangle()
-            .foregroundStyle(.black)
-            .frame(
-                width: notchSize.width,
-                height: notchSize.height
-            )
-            .clipShape(.rect(
-                bottomLeadingRadius: notchCornerRadius,
-                bottomTrailingRadius: notchCornerRadius
-            ))
-            .overlay {
-                ZStack(alignment: .topTrailing) {
-                    Rectangle()
-                        .frame(width: notchCornerRadius, height: notchCornerRadius)
-                        .foregroundStyle(.black)
-                    Rectangle()
-                        .clipShape(.rect(topTrailingRadius: notchCornerRadius))
-                        .foregroundStyle(.white)
-                        .frame(
-                            width: notchCornerRadius + vm.spacing,
-                            height: notchCornerRadius + vm.spacing
-                        )
-                        .blendMode(.destinationOut)
-                }
-                .compositingGroup()
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                .offset(x: -notchCornerRadius - vm.spacing + 0.5, y: -0.5)
-            }
-            .overlay {
-                ZStack(alignment: .topLeading) {
-                    Rectangle()
-                        .frame(width: notchCornerRadius, height: notchCornerRadius)
-                        .foregroundStyle(.black)
-                    Rectangle()
-                        .clipShape(.rect(topLeadingRadius: notchCornerRadius))
-                        .foregroundStyle(.white)
-                        .frame(
-                            width: notchCornerRadius + vm.spacing,
-                            height: notchCornerRadius + vm.spacing
-                        )
-                        .blendMode(.destinationOut)
-                }
-                .compositingGroup()
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-                .offset(x: notchCornerRadius + vm.spacing - 0.5, y: -0.5)
-            }
     }
 
     @ViewBuilder

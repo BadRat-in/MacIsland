@@ -45,4 +45,3 @@ class DynamicIslandWindow: NSWindow {
         true
     }
 }
-
