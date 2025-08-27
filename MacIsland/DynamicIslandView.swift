@@ -13,6 +13,12 @@ struct DynamicIslandView: View {
 
     @State var dropTargeting: Bool = false
     @State private var showChargingPop = false
+    
+    init(vm: DynamicIslandViewModel, batteryManager: BatteryManager) {
+        _vm = StateObject(wrappedValue: vm)
+        self.batteryManager = batteryManager
+        _showChargingPop = State(initialValue: batteryManager.isCharging)
+    }
 
     var notchSize: CGSize {
         switch vm.status {
@@ -30,7 +36,7 @@ struct DynamicIslandView: View {
             return vm.notchOpenedSize
         case .popping:
             return .init(
-                width: showChargingPop ? 275 : vm.deviceNotchRect.width,
+                width: showChargingPop ? 280 : vm.deviceNotchRect.width,
                 height: vm.deviceNotchRect.height
             )
         }

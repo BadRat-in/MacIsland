@@ -26,11 +26,11 @@ struct ChargingPopView: View {
                 .foregroundColor(.primary)
                 .frame(alignment: .trailing)
         }
-        .padding(.horizontal, 10)
+        .padding(.horizontal, 5)
         .padding(.vertical, 8)
         .preferredColorScheme(.dark)
         .shadow(radius: 4)
-        .frame(maxWidth: 270) // keep it notch-like
+        .frame(maxWidth: 275) // keep it notch-like
         .animation(.spring(response: 0.4, dampingFraction: 0.8), value: batteryManager.percentage)
     }
     
