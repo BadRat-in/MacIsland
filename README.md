@@ -1,6 +1,6 @@
 # MacIsland
 
-**MacIsland** brings the **Dynamic Island experience to macOS**, inspired by iOS.  
+**MacIsland** brings the **Dynamic Island experience to macOS**, inspired by iOS.
 It’s a sleek, interactive floating UI that integrates system essentials like **AirDrop, temporary file storage, and battery insights**, with upcoming support for notifications and music control.
 
 > ⚠️ **Note:** MacIsland is currently in **pre-release (experimental)**. Expect frequent updates and missing features.
@@ -12,13 +12,13 @@ It’s a sleek, interactive floating UI that integrates system essentials like *
 - [x] **Drag & Drop for AirDrop** – Easily drag and drop files to share via AirDrop.
 - [x] **DropTray (Temporary Storage)** – Drop files into a tray that stores them for **1 day (default)**, with customizable duration.
 - [x] **Battery Status** – Instantly check your Mac’s battery percentage in the island.
-- [ ] **Music Control** – Play, pause, and skip tracks with built-in media controls. *(Coming Soon)*
+- [ ] **Music Control** – Play, pause, and skip tracks with built-in media controls. _(Coming Soon)_
 
 ---
 
 ## 🎥 Preview
 
-![Preview](demo/preview.gif)
+![Preview](demo/preview.mov)
 
 ---
 
@@ -42,7 +42,7 @@ If you prefer to build manually:
 git clone https://github.com/BadRat-in/MacIsland.git
 cd MacIsland
 open MacIsland.xcodeproj
-````
+```
 
 - Select the Mac target in Xcode and hit **Run**.
 
@@ -57,7 +57,7 @@ Music support isn’t included yet — use the pre-built release if you just wan
 - **AirDrop** → Drag files into the island to quickly share.
 - **DropTray** → Temporarily store files by dragging them onto the tray.
 - **Battery Status** → Battery icon + percentage appears when charging/discharging.
-- *(Future)* Music playback.
+- _(Future)_ Music playback.
 
 ---
 

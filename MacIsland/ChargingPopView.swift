@@ -14,7 +14,6 @@ struct ChargingPopView: View {
         HStack {
             // Left side: Battery Icon
             batteryIcon(for: batteryManager.percentage, charging: batteryManager.isCharging)
-                .foregroundColor(batteryManager.isCharging ? .green : .primary)
                 .font(.title2)
                 .frame(alignment: .leading)
             
@@ -37,22 +36,23 @@ struct ChargingPopView: View {
     
     
     private func batteryIcon(for percentage: Int, charging: Bool) -> some View {
-        let level: String
+        let level: Int
         switch percentage {
-        case 0..<20:
-            level = "0"
-        case 20..<40:
-            level = "25"
+        case 0..<10:
+            level = 0
+        case 10..<40:
+            level = 25
         case 40..<70:
-            level = "50"
+            level = 50
         case 70..<90:
-            level = "75"
+            level = 75
         default:
-            level = "100"
+            level = 100
         }
 
         return ZStack {
             Image(systemName: "battery.\(level)")
+                .foregroundStyle(batteryManager.isCharging ? .green : level <= 20 ? .red : .primary, batteryManager.isCharging ? .green : .primary)
             if charging {
                 Image(systemName: "bolt.fill")
                     .font(.system(size: 13))
