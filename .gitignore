@@ -1,2 +1,5 @@
 # build data
 /build
+
+# XCode user files
+*.xcuserstate

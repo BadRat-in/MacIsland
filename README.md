@@ -18,7 +18,7 @@ It’s a sleek, interactive floating UI that integrates system essentials like *
 
 ## 🎥 Preview
 
-![Preview](demo/preview.mov)
+![Preview](demo/preview.gif)
 
 ---
 
