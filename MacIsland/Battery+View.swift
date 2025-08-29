@@ -46,7 +46,7 @@ struct BatteryView: View {
 
         return ZStack {
             Image(systemName: "battery.\(level)")
-                .foregroundStyle(batteryManager.isCharging ? .green : level <= 20 ? .red : .primary, batteryManager.isCharging ? .green : .primary)
+                .foregroundStyle(batteryManager.isCharging ? .green : percentage <= 20 ? .red : .primary, batteryManager.isCharging ? .green : .primary)
             if charging {
                 Image(systemName: "bolt.fill")
                     .font(.system(size: 13))
