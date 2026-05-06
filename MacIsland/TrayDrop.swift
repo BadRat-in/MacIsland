@@ -67,7 +67,7 @@ class TrayDrop: ObservableObject {
     func load(_ providers: [NSItemProvider]) {
         assert(!Thread.isMainThread)
         DispatchQueue.main.asyncAndWait { isLoading += 1 }
-        guard let urls = providers.interfaceConvert() else {
+        guard let urls = providers.stageDroppedFiles() else {
             DispatchQueue.main.asyncAndWait { isLoading -= 1 }
             return
         }
