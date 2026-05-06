@@ -85,7 +85,7 @@ struct AirDropView: View {
 
     func beginDrop(_ providers: [NSItemProvider]) {
         assert(!Thread.isMainThread)
-        guard let urls = providers.interfaceConvert() else { return }
+        guard let urls = providers.stageDroppedFiles() else { return }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             let drop = AirDrop(files: urls)
             drop.begin()
