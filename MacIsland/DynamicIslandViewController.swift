@@ -10,8 +10,16 @@ import Cocoa
 import SwiftUI
 
 class DynamicIslandViewController: NSHostingController<DynamicIslandView> {
-    init(_ vm: DynamicIslandViewModel, batteryManager: BatteryManager) {
-        super.init(rootView: DynamicIslandView(vm: vm, batteryManager: batteryManager))
+    init(
+        _ vm: DynamicIslandViewModel,
+        batteryManager: BatteryManager,
+        nowPlayingManager: NowPlayingManager
+    ) {
+        super.init(rootView: DynamicIslandView(
+            vm: vm,
+            batteryManager: batteryManager,
+            nowPlayingManager: nowPlayingManager
+        ))
     }
 
     @available(*, unavailable)

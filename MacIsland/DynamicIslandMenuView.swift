@@ -16,9 +16,23 @@ struct DynamicIslandMenuView: View {
     var body: some View {
         HStack(spacing: vm.spacing) {
             close
+            music
             settings
             clear
         }
+    }
+
+    var music: some View {
+        ColorButton(
+            cornerRadius: 5,
+            color: ColorfulPreset.appleIntelligence.colors,
+            image: Image(systemName: "music.note"),
+            title: LocalizedStringKey("Music")
+        )
+        .onTapGesture {
+            vm.openMusic()
+        }
+        .clipShape(RoundedRectangle(cornerRadius: vm.cornerRadius))
     }
 
     var close: some View {

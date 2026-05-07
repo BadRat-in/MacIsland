@@ -12,6 +12,7 @@ private let notchHeight: CGFloat = 200
 class DynamicIslandWindowController: NSWindowController {
     var vm: DynamicIslandViewModel?
     var batteryManager: BatteryManager?
+    var nowPlayingManager: NowPlayingManager?
     weak var screen: NSScreen?
 
     var openAfterCreate: Bool = false
@@ -27,7 +28,13 @@ class DynamicIslandWindowController: NSWindowController {
         self.vm = vm
         let batteryManager = BatteryManager()
         self.batteryManager = batteryManager
-        contentViewController = DynamicIslandViewController(vm, batteryManager: batteryManager)
+        let nowPlayingManager = NowPlayingManager()
+        self.nowPlayingManager = nowPlayingManager
+        contentViewController = DynamicIslandViewController(
+            vm,
+            batteryManager: batteryManager,
+            nowPlayingManager: nowPlayingManager
+        )
 
         if notchSize == .zero {
             notchSize = .init(width: 150, height: 28)
@@ -76,6 +83,8 @@ class DynamicIslandWindowController: NSWindowController {
     func destroy() {
         vm?.destroy()
         vm = nil
+        nowPlayingManager = nil
+        batteryManager = nil
         window?.close()
         contentViewController = nil
         window = nil

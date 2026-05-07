@@ -10,19 +10,32 @@ import SwiftUI
 struct DynamicIslandView: View {
     @StateObject var vm: DynamicIslandViewModel
     @ObservedObject var batteryManager: BatteryManager
+    @ObservedObject var nowPlayingManager: NowPlayingManager
 
     @State var dropTargeting: Bool = false
     @State private var showChargingPop = false
-    
-    init(vm: DynamicIslandViewModel, batteryManager: BatteryManager) {
+    @State private var showMusicPop = false
+    /// Increments on every track-change notification so a stale dismiss
+    /// timer can no-op when a fresh one has superseded it.
+    @State private var musicPopToken: Int = 0
+
+    init(
+        vm: DynamicIslandViewModel,
+        batteryManager: BatteryManager,
+        nowPlayingManager: NowPlayingManager
+    ) {
         _vm = StateObject(wrappedValue: vm)
         self.batteryManager = batteryManager
+        self.nowPlayingManager = nowPlayingManager
         _showChargingPop = State(initialValue: batteryManager.isCharging)
     }
 
+    /// True when any chip-style auto-pop should occupy the notch.
+    private var showAnyPop: Bool { showChargingPop || showMusicPop }
+
     var notchSize: CGSize {
         switch vm.status {
-        case let status where status != .opened && showChargingPop:
+        case let status where status != .opened && showAnyPop:
             return vm.notchChargingSize
         case .closed:
             var ans = CGSize(
@@ -36,7 +49,7 @@ struct DynamicIslandView: View {
             return vm.notchOpenedSize
         case .popping:
             return .init(
-                width: showChargingPop ? 280 : vm.deviceNotchRect.width,
+                width: showAnyPop ? 280 : vm.deviceNotchRect.width,
                 height: vm.deviceNotchRect.height
             )
         }
@@ -55,10 +68,14 @@ struct DynamicIslandView: View {
             notch
                 .zIndex(0)
                 .disabled(true)
-                .opacity(vm.notchVisible || showChargingPop ? 1 : 0.3)
+                .opacity(vm.notchVisible || showAnyPop ? 1 : 0.3)
             Group {
                 if showChargingPop && vm.status != .opened {
                     ChargingPopView(batteryManager: batteryManager)
+                        .transition(.expandWidth.combined(with: .opacity))
+                        .zIndex(1)
+                } else if showMusicPop && vm.status != .opened {
+                    MusicPopView(nowPlayingManager: nowPlayingManager)
                         .transition(.expandWidth.combined(with: .opacity))
                         .zIndex(1)
                 }
@@ -67,8 +84,12 @@ struct DynamicIslandView: View {
                 if vm.status == .opened {
                     VStack(spacing: vm.spacing) {
                         DynamicIslandHeaderView(vm: vm)
-                        DynamicIslandContentView(vm: vm, batteryManager: batteryManager)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        DynamicIslandContentView(
+                            vm: vm,
+                            batteryManager: batteryManager,
+                            nowPlayingManager: nowPlayingManager
+                        )
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
                     .padding(vm.spacing)
                     .frame(maxWidth: vm.notchOpenedSize.width, maxHeight: vm.notchOpenedSize.height)
@@ -85,7 +106,7 @@ struct DynamicIslandView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: .batteryChargeStateChanged)) { notif in
             if vm.status != .closed { return }
-            
+
             if (notif.object as? Bool ?? false) {
                 withAnimation(.spring()) {
                     showChargingPop = true
@@ -96,6 +117,17 @@ struct DynamicIslandView: View {
                         showChargingPop = false
                     }
                 }
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .nowPlayingTrackChanged)) { _ in
+            // Charging pop wins; we never show the music chip on top of it.
+            guard vm.status == .closed, !showChargingPop else { return }
+            musicPopToken += 1
+            let token = musicPopToken
+            withAnimation(.spring()) { showMusicPop = true }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+                guard token == musicPopToken else { return }
+                withAnimation(.spring()) { showMusicPop = false }
             }
         }
         .background(dragDetector)
