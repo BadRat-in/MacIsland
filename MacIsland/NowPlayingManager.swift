@@ -98,6 +98,10 @@ final class NowPlayingManager: ObservableObject {
 
     init() {
         let center = DistributedNotificationCenter.default()
+
+        // Per-app fallback observers (Music.app + Spotify) — kept
+        // active alongside MediaRemote so we still have a working
+        // path on macOS versions where MR is locked down.
         center.addObserver(
             self,
             selector: #selector(handleMusicAppNotification(_:)),
@@ -141,7 +145,7 @@ final class NowPlayingManager: ObservableObject {
         // Apply the partial state (title/artist/album/duration/isPlaying)
         // immediately so the UI updates without waiting on AppleScript.
         musicAppState = state
-        updateActiveSource(.musicApp, isPlaying: state.isPlaying)
+        recomputeActiveSource()
         republish()
 
         // Then enrich with AppleScript-fetched fields async (artwork,
@@ -155,24 +159,10 @@ final class NowPlayingManager: ObservableObject {
               Array(info.keys).sorted().description)
         guard let state = parseSpotify(info) else { return }
         spotifyState = state
-        updateActiveSource(.spotify, isPlaying: state.isPlaying)
+        recomputeActiveSource()
         republish()
     }
 
-    private func updateActiveSource(_ source: Source, isPlaying: Bool) {
-        if isPlaying {
-            activeSource = source
-        } else if activeSource == source {
-            // Source we were tracking just paused/stopped; defer to the
-            // other source if it has anything.
-            switch source {
-            case .musicApp:
-                activeSource = (spotifyState?.isPlaying == true) ? .spotify : nil
-            case .spotify:
-                activeSource = (musicAppState?.isPlaying == true) ? .musicApp : nil
-            }
-        }
-    }
 
     // MARK: - Parsers
 
@@ -267,8 +257,9 @@ final class NowPlayingManager: ObservableObject {
         case .musicApp: return musicAppState
         case .spotify: return spotifyState
         case .none:
-            // Both inactive — show whichever has a track loaded so the
-            // user can see "X is paused" without it appearing as empty.
+            // None playing — show whichever has a track loaded so the
+            // user can see "X is paused" without the chip appearing
+            // empty.
             if let m = musicAppState, m.title != nil { return m }
             if let s = spotifyState, s.title != nil { return s }
             return nil
@@ -300,12 +291,10 @@ final class NowPlayingManager: ObservableObject {
             artwork = nil
             artworkFetchTask?.cancel()
             artworkFetchTask = nil
-            // Drop the Music.app artwork cache when the track changes so
-            // we don't briefly render the previous song's art before the
-            // AppleScript fetch returns the new one.
-            if activeSource == .musicApp {
-                musicAppArtwork = nil
-            }
+            // Drop the Music.app artwork cache when the track changes
+            // so we don't briefly render the previous song's art
+            // before the new AppleScript fetch returns.
+            if activeSource == .musicApp { musicAppArtwork = nil }
             lastTrackFingerprint = fingerprint
         }
 
@@ -452,46 +441,47 @@ final class NowPlayingManager: ObservableObject {
     }
 
     /// Picks the best activeSource based on current per-source state.
-    /// Different from `updateActiveSource(_:isPlaying:)` — that one
-    /// takes a hint from a single notification, this one looks at all
-    /// sources in aggregate. Called from the poll where we don't have
-    /// a "this just changed" signal.
+    /// Looks at all sources in aggregate and applies the priority
+    /// (MediaRemote > Music.app > Spotify) so a lower-priority DNC
+    /// notification can't downgrade a higher-priority active source.
     private func recomputeActiveSource() {
         let musicPlaying = musicAppState?.isPlaying ?? false
         let spotifyPlaying = spotifyState?.isPlaying ?? false
 
-        if musicPlaying, spotifyPlaying {
-            // Both playing somehow — keep whichever we currently track,
-            // or pick Music.app as a tiebreaker.
-            if activeSource == nil { activeSource = .musicApp }
-        } else if musicPlaying {
+        if musicPlaying {
             activeSource = .musicApp
         } else if spotifyPlaying {
             activeSource = .spotify
         } else {
-            // Neither playing. Hold the previous source so the chip can
+            // None playing. Hold the previous source so the chip can
             // dissolve cleanly via the 0.5s grace in DynamicIslandView,
-            // unless that source has no track loaded at all.
-            if activeSource == .musicApp, musicAppState?.title == nil {
+            // unless that source has nothing loaded at all.
+            switch activeSource {
+            case .musicApp where musicAppState?.title == nil:
                 activeSource = nil
-            } else if activeSource == .spotify, spotifyState?.title == nil {
+            case .spotify where spotifyState?.title == nil:
                 activeSource = nil
+            default:
+                break
             }
         }
     }
 
     // MARK: - Volume
 
+    /// Drives the macOS **system output volume** — the same thing
+    /// the keyboard volume keys move. We previously routed this to
+    /// `tell application "Music" to set sound volume`, which only
+    /// adjusts Music.app's *internal* slider stacked on top of the
+    /// system output: cranking it to 100 inside the app while system
+    /// output sat at 65% capped perceived volume at 65%. Driving
+    /// system output matches user expectation ("the volume keys
+    /// move this slider, this slider moves the volume keys").
     func setVolume(_ value: Double) {
         let clamped = max(0, min(100, value))
         volume = clamped
         lastSetVolumeTime = Date()
-        let appName: String
-        switch activeSource {
-        case .spotify: appName = "Spotify"
-        case .musicApp, .none: appName = "Music"
-        }
-        let source = "tell application \"\(appName)\" to set sound volume to \(Int(clamped.rounded()))"
+        let source = "set volume output volume \(Int(clamped.rounded()))"
         DispatchQueue.global(qos: .userInitiated).async {
             NSAppleScript(source: source)?.executeAndReturnError(nil)
         }

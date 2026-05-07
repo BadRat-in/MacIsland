@@ -32,16 +32,21 @@ enum MusicAppBridge {
     }
 
     static func currentSnapshot() -> Snapshot? {
+        // We deliberately fetch the **system output volume** (same
+        // value the keyboard volume keys move) instead of Music.app's
+        // internal `sound volume`. The latter is layered on top of
+        // system output and would mislead the slider.
         let source = """
         tell application "Music"
             if it is running then
                 try
                     set s to player state as text
+                    set sysVol to output volume of (get volume settings)
                     if s is "stopped" then
-                        return {"stopped", "", "", "", 0, 0, sound volume}
+                        return {"stopped", "", "", "", 0, 0, sysVol}
                     end if
                     set t to current track
-                    return {s, (name of t) as text, (artist of t) as text, (album of t) as text, (duration of t), player position, sound volume}
+                    return {s, (name of t) as text, (artist of t) as text, (album of t) as text, (duration of t), player position, sysVol}
                 end try
             end if
             return missing value
@@ -88,16 +93,16 @@ enum MusicAppBridge {
             return nil
         }
         let data = descriptor.data
-        guard !data.isEmpty else {
-            NSLog("[MusicAppBridge] currentArtwork: empty data — track has no artwork")
-            return nil
-        }
+        // Music.app returns a 4-byte placeholder during track-transition
+        // pauses ("just stopped, not yet on next") and for tracks with
+        // no artwork — both legitimate "no artwork right now" states,
+        // not errors. Anything below ~1KB can't be a real image either,
+        // so treat the whole short-data case as no-artwork silently.
+        guard data.count > 1024 else { return nil }
         guard let image = NSImage(data: data) else {
             NSLog("[MusicAppBridge] currentArtwork: NSImage failed to parse %d bytes", data.count)
             return nil
         }
-        NSLog("[MusicAppBridge] currentArtwork: %d bytes -> %.0fx%.0f",
-              data.count, image.size.width, image.size.height)
         return image
     }
 

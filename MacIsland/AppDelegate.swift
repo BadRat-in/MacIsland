@@ -14,6 +14,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var isLaunchedAtLogin = false
     var mainWindowController: DynamicIslandWindowController?
 
+    /// System-state observers live for the lifetime of the process —
+    /// they listen to DNC / IOKit notifications that have nothing to
+    /// do with which screen the notch is drawn on. Keeping them up
+    /// here rather than inside DynamicIslandWindowController means a
+    /// `didChangeScreenParametersNotification` (which fires on focus
+    /// changes, full-screen toggles, display sleep, etc.) doesn't
+    /// destroy and recreate them — previously that wiped now-playing
+    /// state and caused the music chip to disappear and re-appear
+    /// after the safety-net poll caught up.
+    let batteryManager = BatteryManager()
+    let nowPlayingManager = NowPlayingManager()
+
     var timer: Timer?
     /// Held for the lifetime of the process to keep the App Nap policy
     /// from suspending us while idle. We listen to system-wide
@@ -70,7 +82,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         mainWindowController = nil
         guard let mainScreen = findScreenFitsOurNeeds() else { return }
-        mainWindowController = .init(screen: mainScreen)
+        mainWindowController = .init(
+            screen: mainScreen,
+            batteryManager: batteryManager,
+            nowPlayingManager: nowPlayingManager
+        )
         if isFirstOpen, !isLaunchedAtLogin {
             mainWindowController?.openAfterCreate = true
         }

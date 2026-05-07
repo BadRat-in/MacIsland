@@ -7,6 +7,21 @@
 
 import AppKit
 
+// DEBUG: redirect stderr to a log file early so NSLog output from the
+// app (whose GUI bootstrap requires `open`-style launch — direct
+// terminal exec exits before NSApplicationMain settles) is captured
+// somewhere the developer can read after the fact. Append mode so
+// successive launches don't wipe history; unbuffered so lines hit
+// disk in real time as the user plays / pauses / skips tracks.
+// Remove or gate behind a build flag before release.
+do {
+    let logPath = "/tmp/macisland-debug.log"
+    let banner = "\n========== \(Date()) — MacIsland session start (pid \(getpid())) ==========\n"
+    freopen(logPath, "a", stderr)
+    setbuf(stderr, nil)
+    fputs(banner, stderr)
+}
+
 let bundleIdentifier = Bundle.main.bundleIdentifier!
 let appVersion = "\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "") (\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""))"
 
