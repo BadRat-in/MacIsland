@@ -34,6 +34,10 @@ final class NowPlayingManager: ObservableObject {
     @Published private(set) var isPlaying: Bool = false
     @Published private(set) var duration: TimeInterval = 0
     @Published private(set) var elapsed: TimeInterval = 0
+    /// Music.app's `sound volume` is on a 0–100 scale. Mirrored here so
+    /// the SwiftUI volume slider can two-way bind without each tick
+    /// triggering a TCC-gated AppleScript round-trip.
+    @Published var volume: Double = 50
 
     /// Kept on the public interface so the view layer doesn't have to
     /// change. With the DNC-based implementation this is always true —
@@ -63,6 +67,9 @@ final class NowPlayingManager: ObservableObject {
 
     private var musicAppState: SourceState?
     private var spotifyState: SourceState?
+    /// Music.app's DNC payload has no artwork — we cache the AppleScript
+    /// result here per track and surface it via `republish()`.
+    private var musicAppArtwork: NSImage?
     /// Whichever source we believe is actively playing right now. When
     /// both apps are paused/stopped, `nil` and the view shows empty.
     private var activeSource: Source?
@@ -71,11 +78,20 @@ final class NowPlayingManager: ObservableObject {
 
     /// Local extrapolation of `elapsed` between notifications so the
     /// progress bar moves smoothly. Spotify ships current position in
-    /// every notification; Music.app doesn't, so for Music.app this
-    /// extrapolates from 0 (acceptable degradation; accurate position
-    /// would require a ScriptingBridge AppleScript and an Automation
-    /// TCC prompt, deferred to the controls PR).
+    /// every notification; Music.app's DNC payload doesn't include
+    /// position at all, so for Music.app we get accurate position only
+    /// from `MusicAppBridge.currentSnapshot()` (poll) or
+    /// `currentPosition()` (per-notification fetch).
     private var tickTimer: Timer?
+
+    /// Safety net for missed Music.app DNC notifications (e.g. when the
+    /// user minimises the Music.app window — Music.app skips emitting
+    /// some events in that state, which previously left our chip
+    /// stuck on the wrong isPlaying value). Polls
+    /// `MusicAppBridge.currentSnapshot()` every few seconds and
+    /// reconciles. Spotify is consistently reliable via DNC so it
+    /// doesn't need a poll.
+    private var musicAppPollTimer: Timer?
 
     /// In-flight artwork fetch task we cancel when track changes.
     private var artworkFetchTask: URLSessionDataTask?
@@ -99,10 +115,14 @@ final class NowPlayingManager: ObservableObject {
         tickTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
             self?.tickElapsed()
         }
+        musicAppPollTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { [weak self] _ in
+            self?.pollMusicApp()
+        }
     }
 
     deinit {
         tickTimer?.invalidate()
+        musicAppPollTimer?.invalidate()
         artworkFetchTask?.cancel()
         DistributedNotificationCenter.default().removeObserver(self)
     }
@@ -111,15 +131,29 @@ final class NowPlayingManager: ObservableObject {
 
     @objc private func handleMusicAppNotification(_ note: Notification) {
         guard let info = note.userInfo as? [String: Any] else { return }
-        let state = parseMusicApp(info)
+        // Diagnostic: dump the keys we received so we can debug edge
+        // cases like "minimize Music.app hides the chip" without
+        // having to attach a debugger.
+        NSLog("[NowPlayingManager] Music.app notification keys: %@",
+              Array(info.keys).sorted().description)
+        guard let state = parseMusicApp(info) else { return }
+
+        // Apply the partial state (title/artist/album/duration/isPlaying)
+        // immediately so the UI updates without waiting on AppleScript.
         musicAppState = state
         updateActiveSource(.musicApp, isPlaying: state.isPlaying)
         republish()
+
+        // Then enrich with AppleScript-fetched fields async (artwork,
+        // position, volume).
+        refreshMusicAppFromBridge()
     }
 
     @objc private func handleSpotifyNotification(_ note: Notification) {
         guard let info = note.userInfo as? [String: Any] else { return }
-        let state = parseSpotify(info)
+        NSLog("[NowPlayingManager] Spotify notification keys: %@",
+              Array(info.keys).sorted().description)
+        guard let state = parseSpotify(info) else { return }
         spotifyState = state
         updateActiveSource(.spotify, isPlaying: state.isPlaying)
         republish()
@@ -142,33 +176,87 @@ final class NowPlayingManager: ObservableObject {
 
     // MARK: - Parsers
 
-    private func parseMusicApp(_ info: [String: Any]) -> SourceState {
+    /// Parse Music.app's `com.apple.iTunes.playerInfo` payload, defensively.
+    /// Returns nil when the payload doesn't look like a real playback
+    /// notification (no Name and no Player State) — this is what fires
+    /// on minimize/hide and would otherwise drop us into "isPlaying =
+    /// false" and hide the chip.
+    private func parseMusicApp(_ info: [String: Any]) -> SourceState? {
+        let nameField = info["Name"] as? String
+        let stateField = info["Player State"] as? String
+        guard nameField != nil || stateField != nil else {
+            NSLog("[NowPlayingManager] Music.app notification has no Name/Player State; ignoring (likely a window state ping).")
+            return nil
+        }
+
+        let prev = musicAppState
         let totalMs = info["Total Time"] as? Double ?? 0
+        let resolvedDuration: TimeInterval = totalMs > 0
+            ? totalMs / 1000.0
+            : prev?.duration ?? 0
+
+        let resolvedIsPlaying: Bool
+        switch stateField {
+        case "Playing": resolvedIsPlaying = true
+        case "Paused", "Stopped": resolvedIsPlaying = false
+        default: resolvedIsPlaying = prev?.isPlaying ?? false
+        }
+
+        // Music.app's DNC payload has no `Playback Position` field, so on
+        // pause/resume we'd otherwise overwrite the previous elapsed time
+        // with 0 — visibly resetting the progress bar until the
+        // AppleScript bridge poll repaired it. Preserve the previous
+        // extrapolated elapsed so the bar holds its position. The
+        // bridge enrichment that follows the handler will overwrite
+        // with ground truth when AppleScript returns.
+        let preservedElapsed: TimeInterval
+        if let prev {
+            let drift = prev.isPlaying
+                ? Date().timeIntervalSince(prev.notificationTime)
+                : 0
+            preservedElapsed = max(prev.elapsedAtNotification + drift, 0)
+        } else {
+            preservedElapsed = 0
+        }
+
         return SourceState(
-            title: info["Name"] as? String,
-            artist: info["Artist"] as? String,
-            album: info["Album"] as? String,
-            duration: totalMs / 1000.0,
-            elapsedAtNotification: 0, // not provided by Music.app DNC payload
+            title: nameField ?? prev?.title,
+            artist: (info["Artist"] as? String) ?? prev?.artist,
+            album: (info["Album"] as? String) ?? prev?.album,
+            duration: resolvedDuration,
+            elapsedAtNotification: preservedElapsed,
             notificationTime: Date(),
             artworkURL: nil,
-            isPlaying: (info["Player State"] as? String) == "Playing"
+            isPlaying: resolvedIsPlaying
         )
     }
 
-    private func parseSpotify(_ info: [String: Any]) -> SourceState {
+    private func parseSpotify(_ info: [String: Any]) -> SourceState? {
+        let nameField = info["Name"] as? String
+        let stateField = info["Player State"] as? String
+        guard nameField != nil || stateField != nil else { return nil }
+
+        let prev = spotifyState
         let durationMs = info["Duration"] as? Double ?? 0
-        let positionSec = info["Playback Position"] as? Double ?? 0
+        let positionSec = info["Playback Position"] as? Double
         let urlString = info["Artwork URL"] as? String
+
+        let resolvedIsPlaying: Bool
+        switch stateField {
+        case "Playing": resolvedIsPlaying = true
+        case "Paused", "Stopped": resolvedIsPlaying = false
+        default: resolvedIsPlaying = prev?.isPlaying ?? false
+        }
+
         return SourceState(
-            title: info["Name"] as? String,
-            artist: info["Artist"] as? String,
-            album: info["Album"] as? String,
-            duration: durationMs / 1000.0,
-            elapsedAtNotification: positionSec,
+            title: nameField ?? prev?.title,
+            artist: (info["Artist"] as? String) ?? prev?.artist,
+            album: (info["Album"] as? String) ?? prev?.album,
+            duration: durationMs > 0 ? durationMs / 1000.0 : prev?.duration ?? 0,
+            elapsedAtNotification: positionSec ?? prev?.elapsedAtNotification ?? 0,
             notificationTime: Date(),
-            artworkURL: urlString.flatMap(URL.init(string:)),
-            isPlaying: (info["Player State"] as? String) == "Playing"
+            artworkURL: urlString.flatMap(URL.init(string:)) ?? prev?.artworkURL,
+            isPlaying: resolvedIsPlaying
         )
     }
 
@@ -212,13 +300,27 @@ final class NowPlayingManager: ObservableObject {
             artwork = nil
             artworkFetchTask?.cancel()
             artworkFetchTask = nil
-            if let url = state?.artworkURL {
-                fetchArtwork(from: url)
+            // Drop the Music.app artwork cache when the track changes so
+            // we don't briefly render the previous song's art before the
+            // AppleScript fetch returns the new one.
+            if activeSource == .musicApp {
+                musicAppArtwork = nil
             }
             lastTrackFingerprint = fingerprint
-            if let title = newTitle, !title.isEmpty {
-                NotificationCenter.default.post(name: .nowPlayingTrackChanged, object: nil)
+        }
+
+        // Pull whichever artwork source matches the active player.
+        switch activeSource {
+        case .spotify:
+            if let url = state?.artworkURL, artwork == nil {
+                fetchArtwork(from: url)
             }
+        case .musicApp:
+            if let cached = musicAppArtwork {
+                artwork = cached
+            }
+        case .none:
+            break
         }
     }
 
@@ -237,5 +339,161 @@ final class NowPlayingManager: ObservableObject {
         }
         artworkFetchTask = task
         task.resume()
+    }
+
+    // MARK: - Playback commands
+
+    /// Verbs are identical for Music.app and Spotify — both apps
+    /// expose `playpause`, `next track`, and `previous track` in their
+    /// AppleScript dictionaries — so we route by active source rather
+    /// than per-app dispatch.
+    enum Command: String {
+        case playPause = "playpause"
+        case next = "next track"
+        case previous = "previous track"
+    }
+
+    func send(_ command: Command) {
+        let appName: String
+        switch activeSource {
+        case .musicApp: appName = "Music"
+        case .spotify: appName = "Spotify"
+        case .none:
+            // Fall back to whichever source has a track loaded so the
+            // user can resume playback after pausing both apps.
+            if musicAppState?.title != nil {
+                appName = "Music"
+            } else if spotifyState?.title != nil {
+                appName = "Spotify"
+            } else {
+                return
+            }
+        }
+        let source = "tell application \"\(appName)\" to \(command.rawValue)"
+        DispatchQueue.global(qos: .userInitiated).async {
+            var error: NSDictionary?
+            NSAppleScript(source: source)?.executeAndReturnError(&error)
+            if let error {
+                NSLog("[NowPlayingManager] %@ %@ failed: %@", appName, command.rawValue, error)
+            }
+        }
+    }
+
+    // MARK: - Music.app safety-net poll + bridge enrichment
+
+    /// Timestamp of the most recent user-driven volume change, used to
+    /// suppress feedback loops where a slider drag races a 3s poll
+    /// snapshot of the old volume value.
+    private var lastSetVolumeTime: Date?
+
+    private func pollMusicApp() {
+        refreshMusicAppFromBridge()
+    }
+
+    /// Pulls the canonical state from Music.app via AppleScript
+    /// (snapshot + artwork) and reconciles. Used both immediately
+    /// after a DNC notification fires (to fill in fields the
+    /// notification doesn't include) and on the safety-net poll
+    /// timer (to recover from missed/stale DNC events — most
+    /// notably: minimising the Music.app window).
+    private func refreshMusicAppFromBridge() {
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard self != nil else { return }
+            let snapshot = MusicAppBridge.currentSnapshot()
+            let artwork = MusicAppBridge.currentArtwork()
+            DispatchQueue.main.async {
+                self?.applyMusicAppBridge(snapshot: snapshot, artwork: artwork)
+            }
+        }
+    }
+
+    private func applyMusicAppBridge(snapshot: MusicAppBridge.Snapshot?, artwork: NSImage?) {
+        // Volume: skip if the user just dragged the slider — otherwise
+        // the next poll would yank the slider back to the previous
+        // server-side value before the AppleScript "set" had time to
+        // land.
+        if let v = snapshot?.volume {
+            let recentlyTouched = lastSetVolumeTime.map { Date().timeIntervalSince($0) < 1.0 } ?? false
+            if !recentlyTouched, abs(v - volume) > 0.5 {
+                volume = v
+            }
+        }
+
+        guard let snapshot else {
+            // Music.app isn't running or AppleScript was denied — leave
+            // existing state in place. If we previously had Music.app
+            // playing, the next DNC tick will sort it out.
+            return
+        }
+
+        if let title = snapshot.title {
+            var state = musicAppState ?? SourceState()
+            state.title = title
+            state.artist = snapshot.artist
+            state.album = snapshot.album
+            if snapshot.duration > 0 {
+                state.duration = snapshot.duration
+            }
+            state.elapsedAtNotification = snapshot.position
+            state.notificationTime = Date()
+            state.isPlaying = snapshot.isPlaying
+            musicAppState = state
+            if artwork != nil {
+                musicAppArtwork = artwork
+            }
+        } else if musicAppState != nil {
+            // Music.app reports nothing playing — drop our cached state.
+            musicAppState = nil
+            musicAppArtwork = nil
+        }
+
+        recomputeActiveSource()
+        republish()
+    }
+
+    /// Picks the best activeSource based on current per-source state.
+    /// Different from `updateActiveSource(_:isPlaying:)` — that one
+    /// takes a hint from a single notification, this one looks at all
+    /// sources in aggregate. Called from the poll where we don't have
+    /// a "this just changed" signal.
+    private func recomputeActiveSource() {
+        let musicPlaying = musicAppState?.isPlaying ?? false
+        let spotifyPlaying = spotifyState?.isPlaying ?? false
+
+        if musicPlaying, spotifyPlaying {
+            // Both playing somehow — keep whichever we currently track,
+            // or pick Music.app as a tiebreaker.
+            if activeSource == nil { activeSource = .musicApp }
+        } else if musicPlaying {
+            activeSource = .musicApp
+        } else if spotifyPlaying {
+            activeSource = .spotify
+        } else {
+            // Neither playing. Hold the previous source so the chip can
+            // dissolve cleanly via the 0.5s grace in DynamicIslandView,
+            // unless that source has no track loaded at all.
+            if activeSource == .musicApp, musicAppState?.title == nil {
+                activeSource = nil
+            } else if activeSource == .spotify, spotifyState?.title == nil {
+                activeSource = nil
+            }
+        }
+    }
+
+    // MARK: - Volume
+
+    func setVolume(_ value: Double) {
+        let clamped = max(0, min(100, value))
+        volume = clamped
+        lastSetVolumeTime = Date()
+        let appName: String
+        switch activeSource {
+        case .spotify: appName = "Spotify"
+        case .musicApp, .none: appName = "Music"
+        }
+        let source = "tell application \"\(appName)\" to set sound volume to \(Int(clamped.rounded()))"
+        DispatchQueue.global(qos: .userInitiated).async {
+            NSAppleScript(source: source)?.executeAndReturnError(nil)
+        }
     }
 }

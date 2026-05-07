@@ -43,34 +43,73 @@ struct MusicView: View {
     private var playingState: some View {
         HStack(spacing: vm.spacing) {
             artwork
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 6) {
                 HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(nowPlayingManager.title ?? "")
                             .font(.system(.headline, design: .rounded))
                             .lineLimit(1)
+                            .contentTransition(.opacity)
                         if let artist = nowPlayingManager.artist, !artist.isEmpty {
                             Text(artist)
                                 .font(.system(.subheadline, design: .rounded))
                                 .foregroundStyle(.secondary)
                                 .lineLimit(1)
+                                .contentTransition(.opacity)
                         }
                         if let album = nowPlayingManager.album, !album.isEmpty {
                             Text(album)
                                 .font(.system(.caption, design: .rounded))
                                 .foregroundStyle(.tertiary)
                                 .lineLimit(1)
+                                .contentTransition(.opacity)
                         }
                     }
+                    .animation(.easeInOut(duration: 0.3), value: nowPlayingManager.title)
                     Spacer(minLength: 0)
                     homeButton
                 }
                 Spacer(minLength: 0)
-                progressBar
+                progressRow
+                controls
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(.horizontal, 4)
+    }
+
+    private var progressRow: some View {
+        HStack(spacing: 8) {
+            Text(formatTime(nowPlayingManager.elapsed))
+                .font(.system(.caption2, design: .rounded))
+                .monospacedDigit()
+                .foregroundStyle(.secondary)
+                .contentTransition(.numericText())
+                .animation(.easeOut(duration: 0.2), value: nowPlayingManager.elapsed)
+            progressBar
+            Text(formatRemaining())
+                .font(.system(.caption2, design: .rounded))
+                .monospacedDigit()
+                .foregroundStyle(.secondary)
+                .contentTransition(.numericText())
+                .animation(.easeOut(duration: 0.2), value: nowPlayingManager.elapsed)
+        }
+    }
+
+    private func formatTime(_ seconds: TimeInterval) -> String {
+        guard seconds.isFinite, seconds >= 0 else { return "0:00" }
+        let total = Int(seconds)
+        return String(format: "%d:%02d", total / 60, total % 60)
+    }
+
+    private func formatRemaining() -> String {
+        let total = max(nowPlayingManager.duration, 0)
+        guard total > 0 else { return "--:--" }
+        let elapsed = max(min(nowPlayingManager.elapsed, total), 0)
+        let remaining = max(total - elapsed, 0)
+        let mins = Int(remaining) / 60
+        let secs = Int(remaining) % 60
+        return String(format: "-%d:%02d", mins, secs)
     }
 
     private var homeButton: some View {
@@ -88,12 +127,81 @@ struct MusicView: View {
         .help(NSLocalizedString("Show app home", comment: ""))
     }
 
+    private var controls: some View {
+        HStack(spacing: 8) {
+            Spacer()
+            controlButton(systemImage: "backward.fill", size: 16) {
+                nowPlayingManager.send(.previous)
+            }
+            .help(NSLocalizedString("Previous track", comment: ""))
+            controlButton(
+                systemImage: nowPlayingManager.isPlaying ? "pause.fill" : "play.fill",
+                size: 20
+            ) {
+                nowPlayingManager.send(.playPause)
+            }
+            .help(NSLocalizedString("Play / Pause", comment: ""))
+            controlButton(systemImage: "forward.fill", size: 16) {
+                nowPlayingManager.send(.next)
+            }
+            .help(NSLocalizedString("Next track", comment: ""))
+            volumeControl
+            Spacer()
+        }
+    }
+
+    private var volumeControl: some View {
+        HStack(spacing: 4) {
+            Image(systemName: speakerIconName)
+                .font(.system(size: 11))
+                .foregroundStyle(.secondary)
+                .frame(width: 14)
+            Slider(
+                value: Binding(
+                    get: { nowPlayingManager.volume },
+                    set: { nowPlayingManager.setVolume($0) }
+                ),
+                in: 0...100
+            )
+            .frame(width: 70)
+            .controlSize(.mini)
+            .tint(.white.opacity(0.85))
+        }
+        .padding(.leading, 8)
+    }
+
+    private var speakerIconName: String {
+        switch nowPlayingManager.volume {
+        case ..<1: return "speaker.slash.fill"
+        case ..<33: return "speaker.wave.1.fill"
+        case ..<66: return "speaker.wave.2.fill"
+        default: return "speaker.wave.3.fill"
+        }
+    }
+
+    private func controlButton(
+        systemImage: String,
+        size: CGFloat,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .font(.system(size: size, weight: .semibold))
+                .foregroundStyle(.primary)
+                .frame(width: 32, height: 32)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+
     private var artwork: some View {
         Group {
             if let image = nowPlayingManager.artwork {
                 Image(nsImage: image)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
+                    .id(nowPlayingManager.title ?? "")
+                    .transition(.opacity.combined(with: .scale(scale: 0.95)))
             } else {
                 ZStack {
                     Rectangle().foregroundStyle(.white.opacity(0.08))
@@ -101,10 +209,13 @@ struct MusicView: View {
                         .font(.system(size: 24))
                         .foregroundStyle(.secondary)
                 }
+                .transition(.opacity)
             }
         }
         .frame(width: 80, height: 80)
         .clipShape(RoundedRectangle(cornerRadius: 10))
+        .animation(.easeInOut(duration: 0.35), value: nowPlayingManager.title)
+        .animation(.easeInOut(duration: 0.25), value: nowPlayingManager.artwork != nil)
     }
 
     private var progressBar: some View {

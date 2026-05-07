@@ -13,11 +13,14 @@ struct DynamicIslandView: View {
     @ObservedObject var nowPlayingManager: NowPlayingManager
 
     @State var dropTargeting: Bool = false
+    /// Sticky-while-charging mirror of `batteryManager.isCharging`.
+    /// We use a separate flag so the chip can hang around for a brief
+    /// dissolve animation after the cable is unplugged.
     @State private var showChargingPop = false
+    /// Sticky-while-playing mirror of `nowPlayingManager.isPlaying`.
+    /// Stays visible for the entire playback duration; dissolves out
+    /// ~0.5s after playback stops to match the charging chip's feel.
     @State private var showMusicPop = false
-    /// Increments on every track-change notification so a stale dismiss
-    /// timer can no-op when a fresh one has superseded it.
-    @State private var musicPopToken: Int = 0
 
     init(
         vm: DynamicIslandViewModel,
@@ -28,14 +31,23 @@ struct DynamicIslandView: View {
         self.batteryManager = batteryManager
         self.nowPlayingManager = nowPlayingManager
         _showChargingPop = State(initialValue: batteryManager.isCharging)
+        _showMusicPop = State(initialValue: nowPlayingManager.isPlaying)
     }
 
-    /// True when any chip-style auto-pop should occupy the notch.
-    private var showAnyPop: Bool { showChargingPop || showMusicPop }
+    /// Which (if any) chip-style indicator is currently shown above the
+    /// closed/popping notch. Charging takes priority over music — only
+    /// one indicator is visible at a time.
+    private enum VisibleChip { case none, charging, music }
+    private var visibleChip: VisibleChip {
+        guard vm.status != .opened else { return .none }
+        if showChargingPop { return .charging }
+        if showMusicPop { return .music }
+        return .none
+    }
 
     var notchSize: CGSize {
         switch vm.status {
-        case let status where status != .opened && showAnyPop:
+        case let status where status != .opened && visibleChip != .none:
             return vm.notchChargingSize
         case .closed:
             var ans = CGSize(
@@ -49,7 +61,7 @@ struct DynamicIslandView: View {
             return vm.notchOpenedSize
         case .popping:
             return .init(
-                width: showAnyPop ? 280 : vm.deviceNotchRect.width,
+                width: visibleChip != .none ? 280 : vm.deviceNotchRect.width,
                 height: vm.deviceNotchRect.height
             )
         }
@@ -68,16 +80,19 @@ struct DynamicIslandView: View {
             notch
                 .zIndex(0)
                 .disabled(true)
-                .opacity(vm.notchVisible || showAnyPop ? 1 : 0.3)
+                .opacity(vm.notchVisible || visibleChip != .none ? 1 : 0.3)
             Group {
-                if showChargingPop && vm.status != .opened {
+                switch visibleChip {
+                case .charging:
                     ChargingPopView(batteryManager: batteryManager)
                         .transition(.expandWidth.combined(with: .opacity))
                         .zIndex(1)
-                } else if showMusicPop && vm.status != .opened {
+                case .music:
                     MusicPopView(nowPlayingManager: nowPlayingManager)
                         .transition(.expandWidth.combined(with: .opacity))
                         .zIndex(1)
+                case .none:
+                    EmptyView()
                 }
             }
             Group {
@@ -119,17 +134,22 @@ struct DynamicIslandView: View {
                 }
             }
         }
-        .onReceive(NotificationCenter.default.publisher(for: .nowPlayingTrackChanged)) { _ in
-            // Charging pop wins; we never show the music chip on top of it.
-            guard vm.status == .closed, !showChargingPop else { return }
-            musicPopToken += 1
-            let token = musicPopToken
-            withAnimation(.spring()) { showMusicPop = true }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
-                guard token == musicPopToken else { return }
-                withAnimation(.spring()) { showMusicPop = false }
+        .onReceive(nowPlayingManager.$isPlaying) { playing in
+            // Mirror the charging-chip pattern: snap visible when playback
+            // starts, dissolve out ~0.5s after it stops so a quick pause
+            // doesn't flicker the chip out and back in.
+            guard vm.status == .closed else { return }
+            if playing {
+                withAnimation(.spring()) { showMusicPop = true }
+            } else {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    if !nowPlayingManager.isPlaying {
+                        withAnimation(.spring()) { showMusicPop = false }
+                    }
+                }
             }
         }
+        .animation(vm.animation, value: visibleChip)
         .background(dragDetector)
         .animation([.opened, .popping].contains(vm.status) ? vm.animation : .interactiveSpring(
             duration: 0.5,

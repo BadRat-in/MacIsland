@@ -15,8 +15,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var mainWindowController: DynamicIslandWindowController?
 
     var timer: Timer?
+    /// Held for the lifetime of the process to keep the App Nap policy
+    /// from suspending us while idle. We listen to system-wide
+    /// DistributedNotificationCenter events (charging, music) and
+    /// poll Music.app every 3s, neither of which the OS knows we
+    /// care about — without this token, the chip can stop updating
+    /// after a long idle window.
+    private var noNapToken: NSObjectProtocol?
 
-    func applicationDidFinishLaunching(_: Notification) {        
+    func applicationDidFinishLaunching(_: Notification) {
+        noNapToken = ProcessInfo.processInfo.beginActivity(
+            options: [.userInitiated],
+            reason: "Watching media playback + battery state"
+        )
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(rebuildApplicationWindows),

@@ -28,6 +28,8 @@
     <string>14.5</string>
     <key>LSApplicationCategoryType</key>
     <string>public.app-category.utilities</string>
+    <key>NSAppleEventsUsageDescription</key>
+    <string>MacIsland uses Apple Events to read the currently-playing track and artwork from Music.app, since macOS doesn't expose this to native apps any other way.</string>
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>LSUIElement</key>

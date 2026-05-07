@@ -9,5 +9,4 @@ import Foundation
 
 extension Notification.Name {
     static let batteryChargeStateChanged = Notification.Name("batteryChargeStateChanged")
-    static let nowPlayingTrackChanged = Notification.Name("nowPlayingTrackChanged")
 }
