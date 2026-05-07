@@ -75,13 +75,34 @@ class AppDelegate: NSObject, NSApplicationDelegate {
      }
 
     @objc func rebuildApplicationWindows() {
+        let newScreen = findScreenFitsOurNeeds()
+
+        // didChangeScreenParametersNotification is over-eager: it
+        // fires on dock visibility changes, app focus shifts,
+        // full-screen toggles, and minimize/restore of *other*
+        // apps — none of which actually change which screen we
+        // want our notch on. Each blind rebuild tore the window
+        // down and recreated it, flashing the chip out + in for
+        // ~50-100ms (the "trying to hide / pushed back" wobble
+        // the user reported on minimize/restore). Skip the
+        // rebuild when the target screen hasn't actually changed.
+        if !isFirstOpen,
+           let existing = mainWindowController,
+           let existingScreen = existing.screen,
+           let target = newScreen,
+           Self.screensMatch(existingScreen, target) {
+            NSLog("[AppDelegate] rebuildApplicationWindows skipped — same screen")
+            return
+        }
+        NSLog("[AppDelegate] rebuildApplicationWindows running")
+
         defer { isFirstOpen = false }
         if let mainWindowController {
             mainWindowController.destroy()
         }
 
         mainWindowController = nil
-        guard let mainScreen = findScreenFitsOurNeeds() else { return }
+        guard let mainScreen = newScreen else { return }
         mainWindowController = .init(
             screen: mainScreen,
             batteryManager: batteryManager,
@@ -90,6 +111,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if isFirstOpen, !isLaunchedAtLogin {
             mainWindowController?.openAfterCreate = true
         }
+    }
+
+    /// Compare two NSScreens by display ID — the system can hand us
+    /// a fresh `NSScreen` instance describing the same physical
+    /// display after a screen-parameters notification, so reference
+    /// equality is unreliable.
+    private static func screensMatch(_ a: NSScreen, _ b: NSScreen) -> Bool {
+        let key = NSDeviceDescriptionKey(rawValue: "NSScreenNumber")
+        let lhs = a.deviceDescription[key] as? NSNumber
+        let rhs = b.deviceDescription[key] as? NSNumber
+        return lhs != nil && lhs == rhs
     }
 
     func determineIfProcessIdentifierMatches() {

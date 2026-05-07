@@ -280,6 +280,18 @@ final class NowPlayingManager: ObservableObject {
                   newArtist ?? "<nil>")
         }
 
+        // Diagnostic: log every nil ↔ non-nil title transition. If the
+        // expanded panel ever flickers between music view and home view
+        // again, this is what surfaces the cause.
+        let hadTitle = (title?.isEmpty == false)
+        let hasTitleNow = (newTitle?.isEmpty == false)
+        if hadTitle != hasTitleNow {
+            NSLog("[NowPlayingManager] title presence changed: had=%@ now=%@ (title=%@)",
+                  hadTitle ? "true" : "false",
+                  hasTitleNow ? "true" : "false",
+                  newTitle ?? "<nil>")
+        }
+
         title = newTitle
         artist = newArtist
         album = state?.album
@@ -396,6 +408,17 @@ final class NowPlayingManager: ObservableObject {
         }
     }
 
+    /// The bridge is **purely an enrichment path**. It updates volume,
+    /// position, duration, artwork, and isPlaying when it has fresh
+    /// data — but it never drops `musicAppState`. Lifecycle is DNC's
+    /// exclusive job (each `playerInfo` notification is a "this track
+    /// is now what's loaded" event from Music.app's authoritative
+    /// state). Without this rule, the bridge's transient nil snapshots
+    /// (Music.app briefly reports "stopped" between tracks, during
+    /// burst notifications, on window minimise, on focus changes)
+    /// would clear cached title/artist and the expanded panel would
+    /// flicker between music and home views while a track was actually
+    /// still loaded.
     private func applyMusicAppBridge(snapshot: MusicAppBridge.Snapshot?, artwork: NSImage?) {
         // Volume: skip if the user just dragged the slider — otherwise
         // the next poll would yank the slider back to the previous
@@ -409,31 +432,35 @@ final class NowPlayingManager: ObservableObject {
         }
 
         guard let snapshot else {
-            // Music.app isn't running or AppleScript was denied — leave
-            // existing state in place. If we previously had Music.app
-            // playing, the next DNC tick will sort it out.
+            // Music.app isn't running or AppleScript was denied — DNC
+            // is what tells us when state genuinely changes. Leave
+            // everything in place.
             return
         }
 
-        if let title = snapshot.title {
-            var state = musicAppState ?? SourceState()
-            state.title = title
-            state.artist = snapshot.artist
-            state.album = snapshot.album
-            if snapshot.duration > 0 {
-                state.duration = snapshot.duration
-            }
-            state.elapsedAtNotification = snapshot.position
-            state.notificationTime = Date()
-            state.isPlaying = snapshot.isPlaying
-            musicAppState = state
-            if artwork != nil {
+        guard let title = snapshot.title, !title.isEmpty else {
+            // Bridge reports no track right now — could be a transient
+            // gap. Don't touch state. Update artwork only if the bridge
+            // happened to grab one.
+            if let artwork {
                 musicAppArtwork = artwork
             }
-        } else if musicAppState != nil {
-            // Music.app reports nothing playing — drop our cached state.
-            musicAppState = nil
-            musicAppArtwork = nil
+            return
+        }
+
+        var state = musicAppState ?? SourceState()
+        state.title = title
+        state.artist = snapshot.artist
+        state.album = snapshot.album
+        if snapshot.duration > 0 {
+            state.duration = snapshot.duration
+        }
+        state.elapsedAtNotification = snapshot.position
+        state.notificationTime = Date()
+        state.isPlaying = snapshot.isPlaying
+        musicAppState = state
+        if artwork != nil {
+            musicAppArtwork = artwork
         }
 
         recomputeActiveSource()
