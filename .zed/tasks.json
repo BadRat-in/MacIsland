@@ -1,0 +1,134 @@
+[
+  {
+    "label": "MacIsland: Build (Debug)",
+    "command": "xcodebuild",
+    "args": [
+      "-project",
+      "MacIsland.xcodeproj",
+      "-scheme",
+      "MacIsland",
+      "-configuration",
+      "Debug",
+      "-destination",
+      "platform=macOS",
+      "build"
+    ],
+    "reveal": "always",
+    "allow_concurrent_runs": false
+  },
+  {
+    "label": "MacIsland: Build (Release)",
+    "command": "xcodebuild",
+    "args": [
+      "-project",
+      "MacIsland.xcodeproj",
+      "-scheme",
+      "MacIsland",
+      "-configuration",
+      "Release",
+      "-destination",
+      "platform=macOS",
+      "build"
+    ],
+    "reveal": "always",
+    "allow_concurrent_runs": false
+  },
+  {
+    "label": "MacIsland: Build & Run (Debug)",
+    "command": "bash",
+    "args": [
+      "-c",
+      "xcodebuild -project MacIsland.xcodeproj -scheme MacIsland -configuration Debug -destination 'platform=macOS' -derivedDataPath build build && pkill -x MacIsland 2>/dev/null; sleep 0.3; open build/Build/Products/Debug/MacIsland.app"
+    ],
+    "reveal": "always",
+    "allow_concurrent_runs": false
+  },
+  {
+    "label": "MacIsland: Stop Running App",
+    "command": "bash",
+    "args": [
+      "-c",
+      "pkill -x MacIsland 2>/dev/null && echo 'Stopped MacIsland.' || echo 'MacIsland was not running.'"
+    ],
+    "reveal": "no_focus"
+  },
+  {
+    "label": "MacIsland: Run All Tests",
+    "command": "xcodebuild",
+    "args": [
+      "-project",
+      "MacIsland.xcodeproj",
+      "-scheme",
+      "MacIsland",
+      "-destination",
+      "platform=macOS",
+      "test"
+    ],
+    "reveal": "always"
+  },
+  {
+    "label": "MacIsland: Run Unit Tests Only",
+    "command": "xcodebuild",
+    "args": [
+      "-project",
+      "MacIsland.xcodeproj",
+      "-scheme",
+      "MacIsland",
+      "-destination",
+      "platform=macOS",
+      "-only-testing:MacIslandTests",
+      "test"
+    ],
+    "reveal": "always"
+  },
+  {
+    "label": "MacIsland: Run UI Tests Only",
+    "command": "xcodebuild",
+    "args": [
+      "-project",
+      "MacIsland.xcodeproj",
+      "-scheme",
+      "MacIsland",
+      "-destination",
+      "platform=macOS",
+      "-only-testing:MacIslandUITests",
+      "test"
+    ],
+    "reveal": "always"
+  },
+  {
+    "label": "MacIsland: Clean Build",
+    "command": "xcodebuild",
+    "args": [
+      "-project",
+      "MacIsland.xcodeproj",
+      "-scheme",
+      "MacIsland",
+      "clean"
+    ],
+    "reveal": "always"
+  },
+  {
+    "label": "MacIsland: Resolve Swift Packages",
+    "command": "xcodebuild",
+    "args": [
+      "-project",
+      "MacIsland.xcodeproj",
+      "-resolvePackageDependencies"
+    ],
+    "reveal": "always"
+  },
+  {
+    "label": "MacIsland: Open in Xcode",
+    "command": "open",
+    "args": ["MacIsland.xcodeproj"],
+    "reveal": "no_focus"
+  },
+  {
+    "label": "MacIsland: Repair Xcode Plug-ins (sudo)",
+    "command": "sudo",
+    "args": ["xcodebuild", "-runFirstLaunch"],
+    "reveal": "always",
+    "use_new_terminal": true
+  }
+]

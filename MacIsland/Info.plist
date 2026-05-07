@@ -28,6 +28,12 @@
     <string>14.5</string>
     <key>LSApplicationCategoryType</key>
     <string>public.app-category.utilities</string>
+    <key>NSAppleEventsUsageDescription</key>
+    <string>MacIsland uses Apple Events to read the currently-playing track and artwork from Music.app, since macOS doesn't expose this to native apps any other way.</string>
+    <key>NSAppleMusicUsageDescription</key>
+    <string>MacIsland reads what you're currently playing in Apple Music to show it on the Dynamic Island.</string>
+    <key>NSMediaLibraryUsageDescription</key>
+    <string>MacIsland reads now-playing track info from the system media library to show it on the Dynamic Island.</string>
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>LSUIElement</key>

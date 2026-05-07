@@ -10,19 +10,44 @@ import SwiftUI
 struct DynamicIslandView: View {
     @StateObject var vm: DynamicIslandViewModel
     @ObservedObject var batteryManager: BatteryManager
+    @ObservedObject var nowPlayingManager: NowPlayingManager
 
     @State var dropTargeting: Bool = false
+    /// Sticky-while-charging mirror of `batteryManager.isCharging`.
+    /// We use a separate flag so the chip can hang around for a brief
+    /// dissolve animation after the cable is unplugged.
     @State private var showChargingPop = false
-    
-    init(vm: DynamicIslandViewModel, batteryManager: BatteryManager) {
+    /// Sticky-while-playing mirror of `nowPlayingManager.isPlaying`.
+    /// Stays visible for the entire playback duration; dissolves out
+    /// ~0.5s after playback stops to match the charging chip's feel.
+    @State private var showMusicPop = false
+
+    init(
+        vm: DynamicIslandViewModel,
+        batteryManager: BatteryManager,
+        nowPlayingManager: NowPlayingManager
+    ) {
         _vm = StateObject(wrappedValue: vm)
         self.batteryManager = batteryManager
+        self.nowPlayingManager = nowPlayingManager
         _showChargingPop = State(initialValue: batteryManager.isCharging)
+        _showMusicPop = State(initialValue: nowPlayingManager.isPlaying)
+    }
+
+    /// Which (if any) chip-style indicator is currently shown above the
+    /// closed/popping notch. Charging takes priority over music — only
+    /// one indicator is visible at a time.
+    private enum VisibleChip { case none, charging, music }
+    private var visibleChip: VisibleChip {
+        guard vm.status != .opened else { return .none }
+        if showChargingPop { return .charging }
+        if showMusicPop { return .music }
+        return .none
     }
 
     var notchSize: CGSize {
         switch vm.status {
-        case let status where status != .opened && showChargingPop:
+        case let status where status != .opened && visibleChip != .none:
             return vm.notchChargingSize
         case .closed:
             var ans = CGSize(
@@ -36,7 +61,7 @@ struct DynamicIslandView: View {
             return vm.notchOpenedSize
         case .popping:
             return .init(
-                width: showChargingPop ? 280 : vm.deviceNotchRect.width,
+                width: visibleChip != .none ? 280 : vm.deviceNotchRect.width,
                 height: vm.deviceNotchRect.height
             )
         }
@@ -55,20 +80,31 @@ struct DynamicIslandView: View {
             notch
                 .zIndex(0)
                 .disabled(true)
-                .opacity(vm.notchVisible || showChargingPop ? 1 : 0.3)
+                .opacity(vm.notchVisible || visibleChip != .none ? 1 : 0.3)
             Group {
-                if showChargingPop && vm.status != .opened {
+                switch visibleChip {
+                case .charging:
                     ChargingPopView(batteryManager: batteryManager)
                         .transition(.expandWidth.combined(with: .opacity))
                         .zIndex(1)
+                case .music:
+                    MusicPopView(nowPlayingManager: nowPlayingManager)
+                        .transition(.expandWidth.combined(with: .opacity))
+                        .zIndex(1)
+                case .none:
+                    EmptyView()
                 }
             }
             Group {
                 if vm.status == .opened {
                     VStack(spacing: vm.spacing) {
                         DynamicIslandHeaderView(vm: vm)
-                        DynamicIslandContentView(vm: vm, batteryManager: batteryManager)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        DynamicIslandContentView(
+                            vm: vm,
+                            batteryManager: batteryManager,
+                            nowPlayingManager: nowPlayingManager
+                        )
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
                     .padding(vm.spacing)
                     .frame(maxWidth: vm.notchOpenedSize.width, maxHeight: vm.notchOpenedSize.height)
@@ -85,7 +121,7 @@ struct DynamicIslandView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: .batteryChargeStateChanged)) { notif in
             if vm.status != .closed { return }
-            
+
             if (notif.object as? Bool ?? false) {
                 withAnimation(.spring()) {
                     showChargingPop = true
@@ -98,6 +134,22 @@ struct DynamicIslandView: View {
                 }
             }
         }
+        .onReceive(nowPlayingManager.$isPlaying) { playing in
+            // Mirror the charging-chip pattern: snap visible when playback
+            // starts, dissolve out ~0.5s after it stops so a quick pause
+            // doesn't flicker the chip out and back in.
+            guard vm.status == .closed else { return }
+            if playing {
+                withAnimation(.spring()) { showMusicPop = true }
+            } else {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    if !nowPlayingManager.isPlaying {
+                        withAnimation(.spring()) { showMusicPop = false }
+                    }
+                }
+            }
+        }
+        .animation(vm.animation, value: visibleChip)
         .background(dragDetector)
         .animation([.opened, .popping].contains(vm.status) ? vm.animation : .interactiveSpring(
             duration: 0.5,

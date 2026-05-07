@@ -87,7 +87,8 @@ struct TrayView: View {
 #Preview {
     DynamicIslandContentView(
         vm: DynamicIslandViewModel(),
-        batteryManager: BatteryManager()
+        batteryManager: BatteryManager(),
+        nowPlayingManager: NowPlayingManager()
     )
     .padding()
     .frame(width: 550, height: 150, alignment: Alignment.center)

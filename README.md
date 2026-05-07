@@ -12,7 +12,10 @@ It’s a sleek, interactive floating UI that integrates system essentials like *
 - [x] **Drag & Drop for AirDrop** – Easily drag and drop files to share via AirDrop.
 - [x] **DropTray (Temporary Storage)** – Drop files into a tray that stores them for **1 day (default)**, with customizable duration.
 - [x] **Battery Status** – Instantly check your Mac’s battery percentage in the island.
-- [ ] **Music Control** – Play, pause, and skip tracks with built-in media controls. _(Coming Soon)_
+- [x] **Now Playing Display** – Track title, artist, album, artwork, and remaining time, with an auto-popup chip when the track changes. _See limitations below._
+- [ ] **Music Controls** – Play, pause, skip, and scrub. _(Coming Soon)_
+
+> **Now Playing limitation.** macOS does not expose a public, system-wide "what's playing now" API to native AppKit apps — `MPMusicPlayerController` and `MusicKit.SystemMusicPlayer` are both `@available(macos, unavailable)`, and Apple's private `MediaRemote.framework` now returns "Operation not permitted" on macOS 15+. As a workaround MacIsland listens to the public `DistributedNotificationCenter` broadcasts from **Music.app** (`com.apple.iTunes.playerInfo`) and **Spotify** (`com.spotify.client.PlaybackStateChanged`). This means **browser audio (YouTube, web players), podcast apps, and any other source that doesn't post to DNC will not be detected** — we're tracking the issue and will switch back to a system-wide source the moment one is available. PRs with cleaner workarounds welcome.
 
 ---
 
@@ -46,9 +49,6 @@ open MacIsland.xcodeproj
 
 - Select the Mac target in Xcode and hit **Run**.
 
-⚠️ If you encounter missing file errors (e.g., `NowPlaying.swift`), remove music-related references.
-Music support isn’t included yet — use the pre-built release if you just want to test.
-
 ---
 
 ## 📌 Usage
@@ -57,7 +57,8 @@ Music support isn’t included yet — use the pre-built release if you just wan
 - **AirDrop** → Drag files into the island to quickly share.
 - **DropTray** → Temporarily store files by dragging them onto the tray.
 - **Battery Status** → Battery icon + percentage appears when charging/discharging.
-- _(Future)_ Music playback.
+- **Now Playing** → When a track is playing in Music.app or Spotify, the island briefly pops up with artwork + remaining time, and the expanded view defaults to the music panel. Tap the home icon in the music panel to access AirDrop / DropTray / Battery.
+- _(Future)_ Music controls (play/pause/skip/scrub).
 
 ---
 

@@ -2,9 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!--
+	  Sandbox is intentionally OFF. Reading the now-playing track from
+	  Music.app needs NSAppleScript, which on macOS 26 hits a kernel
+	  sandbox denial for `mach-lookup com.apple.security.syspolicy.exec`
+	  even with `com.apple.security.automation.apple-events` and the
+	  `temporary-exception.apple-events` for `com.apple.Music` granted.
+	  Standard for menu-bar utility apps in this category (NotchDrop,
+	  NotchNook, AlcoveX, etc.). MacIsland is GitHub-distributed, not
+	  Mac App Store, so the sandbox requirement doesn't apply.
+	-->
 	<key>com.apple.security.app-sandbox</key>
-	<true/>
-	<key>com.apple.security.files.user-selected.read-only</key>
+	<false/>
+	<key>com.apple.security.automation.apple-events</key>
 	<true/>
 </dict>
 </plist>

@@ -52,7 +52,7 @@ class DynamicIslandViewModel: NSObject, ObservableObject {
         case menu
         case settings
         case dropTray
-//        case music
+        case music
     }
 
     var notchOpenedRect: CGRect {
@@ -95,6 +95,12 @@ class DynamicIslandViewModel: NSObject, ObservableObject {
     @Published var waitInterval: Double = 3
     @Published var coloredSpectrogram: Bool = true
 
+    /// When in `.normal` and a track is playing, the music panel is the
+    /// default content. The user can flip to the AirDrop / Tray / Battery
+    /// row via the Home button in MusicView. Reset on every fresh open
+    /// so reopening the notch returns to the music-default behaviour.
+    @Published var preferHomeOverMusic: Bool = false
+
     @PublishedPersist(key: "selectedLanguage", defaultValue: .system)
     var selectedLanguage: Language
 
@@ -103,6 +109,16 @@ class DynamicIslandViewModel: NSObject, ObservableObject {
     func notchOpen(_ reason: OpenReason) {
         openReason = reason
         status = .opened
+        contentType = .normal
+        preferHomeOverMusic = false
+    }
+
+    /// Called by MusicView's Home button. Switches the user from the
+    /// music-default rendering of `.normal` to the AirDrop/Tray/Battery
+    /// row. Also takes effect when invoked from `.music` (the explicit
+    /// menu tab) — both end up on the home content.
+    func showHome() {
+        preferHomeOverMusic = true
         contentType = .normal
     }
 
@@ -115,11 +131,11 @@ class DynamicIslandViewModel: NSObject, ObservableObject {
     func showSettings() {
         contentType = .settings
     }
-    
-//    func openMusic(){
-//        contentType = .music
-//    }
-    
+
+    func openMusic() {
+        contentType = .music
+    }
+
     func openDropTray(){
         contentType = .dropTray
     }
