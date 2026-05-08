@@ -43,6 +43,18 @@ final class NowPlayingManager: ObservableObject {
     @Published private(set) var duration: TimeInterval = 0
     @Published private(set) var elapsed: TimeInterval = 0
 
+    /// Fidelity of the active source. Views check this to adapt:
+    /// when the active source is `.existence` (the system Now
+    /// Playing menu-bar widget says something is playing but we
+    /// can't read what), the chip renders a generic "Now Playing"
+    /// placeholder and the expanded view hides transport controls.
+    @Published private(set) var fidelity: NowPlayingSnapshot.Fidelity?
+
+    /// Capabilities of the currently active source. Views grey out
+    /// buttons that wouldn't do anything (the AX existence source
+    /// declares `.none` since it has no transport channel).
+    @Published private(set) var activeControls: NowPlayingControls = .none
+
     /// Mirrors macOS system output volume on a 0–100 scale. The
     /// slider in the music view two-way-binds to this; `setVolume(_:)`
     /// writes through to the system. Polled every 3 s so external
@@ -56,9 +68,13 @@ final class NowPlayingManager: ObservableObject {
     /// listening.
     let isAvailable: Bool = true
 
+    /// True when there's anything worth showing in the chip — either
+    /// real track text from a full-fidelity source, or the
+    /// system-wide "something is playing" signal from the AX
+    /// existence source. Views drive showMusicAsDefault from this.
     var hasTrack: Bool {
-        guard let title, !title.isEmpty else { return false }
-        return true
+        if let title, !title.isEmpty { return true }
+        return fidelity == .existence && isPlaying
     }
 
     /// Public command type kept so existing
@@ -93,8 +109,14 @@ final class NowPlayingManager: ObservableObject {
     private var lastSetVolumeTime: Date?
 
     init() {
+        // Order matters: the manager's tie-break on equal fidelity +
+        // play-state goes to whichever source registered first. AX
+        // existence sits at the bottom because its fidelity is
+        // already the lowest, but registering it last makes intent
+        // explicit.
         register(MusicAppSource())
         register(SpotifySource())
+        register(AXExistenceSource())
 
         if let v = SystemVolume.current() {
             volume = v
@@ -143,6 +165,7 @@ final class NowPlayingManager: ObservableObject {
         }
 
         activeSource = best?.0
+        activeControls = best?.0.controlsCapability ?? .none
         publish(best?.1)
     }
 
@@ -170,6 +193,7 @@ final class NowPlayingManager: ObservableObject {
         isPlaying = snapshot?.isPlaying ?? false
         duration = snapshot?.duration ?? 0
         elapsed = snapshot?.elapsed ?? 0
+        fidelity = snapshot?.fidelity
     }
 
     private func tickElapsed() {

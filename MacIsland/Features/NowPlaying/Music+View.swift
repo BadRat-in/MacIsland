@@ -46,7 +46,7 @@ struct MusicView: View {
             VStack(alignment: .leading, spacing: 6) {
                 HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(nowPlayingManager.title ?? "")
+                        Text(displayTitle)
                             .font(.system(.headline, design: .rounded))
                             .lineLimit(1)
                             .contentTransition(.opacity)
@@ -64,18 +64,46 @@ struct MusicView: View {
                                 .lineLimit(1)
                                 .contentTransition(.opacity)
                         }
+                        if isExistenceOnly {
+                            Text(NSLocalizedString(
+                                "Playing in another app — title isn't readable on macOS for browser/PWA audio.",
+                                comment: "Subtitle in the music panel when only the existence signal is available"
+                            ))
+                            .font(.system(.caption, design: .rounded))
+                            .foregroundStyle(.tertiary)
+                            .lineLimit(2)
+                        }
                     }
                     .animation(.easeInOut(duration: 0.3), value: nowPlayingManager.title)
                     Spacer(minLength: 0)
                     homeButton
                 }
                 Spacer(minLength: 0)
-                progressRow
+                if !isExistenceOnly {
+                    progressRow
+                }
                 controls
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(.horizontal, 4)
+    }
+
+    /// Title shown in the panel header. Falls back to a generic
+    /// "Now Playing" string for the existence-only case so the chip
+    /// doesn't render an empty headline.
+    private var displayTitle: String {
+        if let title = nowPlayingManager.title, !title.isEmpty {
+            return title
+        }
+        if isExistenceOnly {
+            return NSLocalizedString("Now Playing", comment: "")
+        }
+        return ""
+    }
+
+    private var isExistenceOnly: Bool {
+        nowPlayingManager.fidelity == .existence
     }
 
     private var progressRow: some View {
@@ -128,23 +156,32 @@ struct MusicView: View {
     }
 
     private var controls: some View {
-        HStack(spacing: 8) {
+        let caps = nowPlayingManager.activeControls
+        return HStack(spacing: 8) {
             Spacer()
-            controlButton(systemImage: "backward.fill", size: 16) {
-                nowPlayingManager.send(.previous)
+            if caps.contains(.previous) {
+                controlButton(systemImage: "backward.fill", size: 16) {
+                    nowPlayingManager.send(.previous)
+                }
+                .help(NSLocalizedString("Previous track", comment: ""))
             }
-            .help(NSLocalizedString("Previous track", comment: ""))
-            controlButton(
-                systemImage: nowPlayingManager.isPlaying ? "pause.fill" : "play.fill",
-                size: 20
-            ) {
-                nowPlayingManager.send(.playPause)
+            if caps.contains(.playPause) {
+                controlButton(
+                    systemImage: nowPlayingManager.isPlaying ? "pause.fill" : "play.fill",
+                    size: 20
+                ) {
+                    nowPlayingManager.send(.playPause)
+                }
+                .help(NSLocalizedString("Play / Pause", comment: ""))
             }
-            .help(NSLocalizedString("Play / Pause", comment: ""))
-            controlButton(systemImage: "forward.fill", size: 16) {
-                nowPlayingManager.send(.next)
+            if caps.contains(.next) {
+                controlButton(systemImage: "forward.fill", size: 16) {
+                    nowPlayingManager.send(.next)
+                }
+                .help(NSLocalizedString("Next track", comment: ""))
             }
-            .help(NSLocalizedString("Next track", comment: ""))
+            // Volume slider always renders — it drives system output
+            // volume regardless of which source is active.
             volumeControl
             Spacer()
         }
