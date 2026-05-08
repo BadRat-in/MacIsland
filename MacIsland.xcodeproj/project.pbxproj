@@ -60,6 +60,10 @@
 		D3CC440A2E700001A000000A /* MusicAppBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CC44092E700001A0000009 /* MusicAppBridge.swift */; };
 		D3CC44062E700001A0000006 /* Music+View.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CC44052E700001A0000005 /* Music+View.swift */; };
 		D3CC44082E700001A0000008 /* MusicPopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CC44072E700001A0000007 /* MusicPopView.swift */; };
+		D3CC44102E700001A0000010 /* NowPlayingSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CC440F2E700001A000000F /* NowPlayingSource.swift */; };
+		D3CC44122E700001A0000012 /* MusicAppSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CC44112E700001A0000011 /* MusicAppSource.swift */; };
+		D3CC44142E700001A0000014 /* SpotifySource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CC44132E700001A0000013 /* SpotifySource.swift */; };
+		D3CC44162E700001A0000016 /* SystemVolume.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CC44152E700001A0000015 /* SystemVolume.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -129,6 +133,10 @@
 		D3CC44092E700001A0000009 /* MusicAppBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicAppBridge.swift; sourceTree = "<group>"; };
 		D3CC44052E700001A0000005 /* Music+View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Music+View.swift"; sourceTree = "<group>"; };
 		D3CC44072E700001A0000007 /* MusicPopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPopView.swift; sourceTree = "<group>"; };
+		D3CC440F2E700001A000000F /* NowPlayingSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingSource.swift; sourceTree = "<group>"; };
+		D3CC44112E700001A0000011 /* MusicAppSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicAppSource.swift; sourceTree = "<group>"; };
+		D3CC44132E700001A0000013 /* SpotifySource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifySource.swift; sourceTree = "<group>"; };
+		D3CC44152E700001A0000015 /* SystemVolume.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemVolume.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -224,7 +232,11 @@
 				57680E172C6789EE000233B9 /* TrayDrop+DropItemView.swift */,
 				57680E1A2C6789EE000233B9 /* TrayDrop+View.swift */,
 				D3CC44032E700001A0000003 /* NowPlayingManager.swift */,
+				D3CC440F2E700001A000000F /* NowPlayingSource.swift */,
+				D3CC44112E700001A0000011 /* MusicAppSource.swift */,
+				D3CC44132E700001A0000013 /* SpotifySource.swift */,
 				D3CC44092E700001A0000009 /* MusicAppBridge.swift */,
+				D3CC44152E700001A0000015 /* SystemVolume.swift */,
 				D3CC44052E700001A0000005 /* Music+View.swift */,
 				D3CC44072E700001A0000007 /* MusicPopView.swift */,
 				57680DEC2C6789D9000233B9 /* Assets.xcassets */,
@@ -442,7 +454,11 @@
 				57680E2A2C6789EF000233B9 /* TrayDrop+View.swift in Sources */,
 				D3FE94CE2E531DA000AE9BA4 /* ChargingPopView.swift in Sources */,
 				D3CC44042E700001A0000004 /* NowPlayingManager.swift in Sources */,
+				D3CC44102E700001A0000010 /* NowPlayingSource.swift in Sources */,
+				D3CC44122E700001A0000012 /* MusicAppSource.swift in Sources */,
+				D3CC44142E700001A0000014 /* SpotifySource.swift in Sources */,
 				D3CC440A2E700001A000000A /* MusicAppBridge.swift in Sources */,
+				D3CC44162E700001A0000016 /* SystemVolume.swift in Sources */,
 				D3CC44062E700001A0000006 /* Music+View.swift in Sources */,
 				D3CC44082E700001A0000008 /* MusicPopView.swift in Sources */,
 			);
