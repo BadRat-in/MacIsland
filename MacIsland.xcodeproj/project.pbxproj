@@ -52,18 +52,18 @@
 		57680E672C678A87000233B9 /* HeapModule in Frameworks */ = {isa = PBXBuildFile; productRef = 57680E662C678A87000233B9 /* HeapModule */; };
 		57680E6A2C678A98000233B9 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 57680E692C678A98000233B9 /* LaunchAtLogin */; };
 		D3C19F0B2E5C00D4008223DE /* AnyTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3C19F0A2E5C00CD008223DE /* AnyTransition.swift */; };
-		D3FE94CA2E53147800AE9BA4 /* BatteryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3FE94C92E53146800AE9BA4 /* BatteryManager.swift */; };
-		D3FE94CC2E53149C00AE9BA4 /* Battery+View.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3FE94CB2E53149300AE9BA4 /* Battery+View.swift */; };
-		D3FE94CE2E531DA000AE9BA4 /* ChargingPopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3FE94CD2E531D9700AE9BA4 /* ChargingPopView.swift */; };
-		D3FE94D02E531E1B00AE9BA4 /* Ext+Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3FE94CF2E531E1800AE9BA4 /* Ext+Notification.swift */; };
 		D3CC44042E700001A0000004 /* NowPlayingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CC44032E700001A0000003 /* NowPlayingManager.swift */; };
-		D3CC440A2E700001A000000A /* MusicAppBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CC44092E700001A0000009 /* MusicAppBridge.swift */; };
 		D3CC44062E700001A0000006 /* Music+View.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CC44052E700001A0000005 /* Music+View.swift */; };
 		D3CC44082E700001A0000008 /* MusicPopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CC44072E700001A0000007 /* MusicPopView.swift */; };
+		D3CC440A2E700001A000000A /* MusicAppBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CC44092E700001A0000009 /* MusicAppBridge.swift */; };
 		D3CC44102E700001A0000010 /* NowPlayingSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CC440F2E700001A000000F /* NowPlayingSource.swift */; };
 		D3CC44122E700001A0000012 /* MusicAppSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CC44112E700001A0000011 /* MusicAppSource.swift */; };
 		D3CC44142E700001A0000014 /* SpotifySource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CC44132E700001A0000013 /* SpotifySource.swift */; };
 		D3CC44162E700001A0000016 /* SystemVolume.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CC44152E700001A0000015 /* SystemVolume.swift */; };
+		D3FE94CA2E53147800AE9BA4 /* BatteryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3FE94C92E53146800AE9BA4 /* BatteryManager.swift */; };
+		D3FE94CC2E53149C00AE9BA4 /* Battery+View.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3FE94CB2E53149300AE9BA4 /* Battery+View.swift */; };
+		D3FE94CE2E531DA000AE9BA4 /* ChargingPopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3FE94CD2E531D9700AE9BA4 /* ChargingPopView.swift */; };
+		D3FE94D02E531E1B00AE9BA4 /* Ext+Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3FE94CF2E531E1800AE9BA4 /* Ext+Notification.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -125,18 +125,18 @@
 		57680E442C678A1F000233B9 /* DynamicIslandHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicIslandHeaderView.swift; sourceTree = "<group>"; };
 		57680E452C678A1F000233B9 /* DynamicIslandWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicIslandWindow.swift; sourceTree = "<group>"; };
 		D3C19F0A2E5C00CD008223DE /* AnyTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyTransition.swift; sourceTree = "<group>"; };
-		D3FE94C92E53146800AE9BA4 /* BatteryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryManager.swift; sourceTree = "<group>"; };
-		D3FE94CB2E53149300AE9BA4 /* Battery+View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Battery+View.swift"; sourceTree = "<group>"; };
-		D3FE94CD2E531D9700AE9BA4 /* ChargingPopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChargingPopView.swift; sourceTree = "<group>"; };
-		D3FE94CF2E531E1800AE9BA4 /* Ext+Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Ext+Notification.swift"; sourceTree = "<group>"; };
 		D3CC44032E700001A0000003 /* NowPlayingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingManager.swift; sourceTree = "<group>"; };
-		D3CC44092E700001A0000009 /* MusicAppBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicAppBridge.swift; sourceTree = "<group>"; };
 		D3CC44052E700001A0000005 /* Music+View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Music+View.swift"; sourceTree = "<group>"; };
 		D3CC44072E700001A0000007 /* MusicPopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPopView.swift; sourceTree = "<group>"; };
+		D3CC44092E700001A0000009 /* MusicAppBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicAppBridge.swift; sourceTree = "<group>"; };
 		D3CC440F2E700001A000000F /* NowPlayingSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingSource.swift; sourceTree = "<group>"; };
 		D3CC44112E700001A0000011 /* MusicAppSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicAppSource.swift; sourceTree = "<group>"; };
 		D3CC44132E700001A0000013 /* SpotifySource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifySource.swift; sourceTree = "<group>"; };
 		D3CC44152E700001A0000015 /* SystemVolume.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemVolume.swift; sourceTree = "<group>"; };
+		D3FE94C92E53146800AE9BA4 /* BatteryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryManager.swift; sourceTree = "<group>"; };
+		D3FE94CB2E53149300AE9BA4 /* Battery+View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Battery+View.swift"; sourceTree = "<group>"; };
+		D3FE94CD2E531D9700AE9BA4 /* ChargingPopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChargingPopView.swift; sourceTree = "<group>"; };
+		D3FE94CF2E531E1800AE9BA4 /* Ext+Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Ext+Notification.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,6 +172,31 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		068D2BF8CAB411A891FB3F28 /* Battery */ = {
+			isa = PBXGroup;
+			children = (
+				D3FE94CD2E531D9700AE9BA4 /* ChargingPopView.swift */,
+				D3FE94C92E53146800AE9BA4 /* BatteryManager.swift */,
+				D3FE94CB2E53149300AE9BA4 /* Battery+View.swift */,
+			);
+			name = Battery;
+			path = Battery;
+			sourceTree = "<group>";
+		};
+		2163B090A525F7453EB6661D /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				57680E192C6789EE000233B9 /* Ext+FileProvider.swift */,
+				D3FE94CF2E531E1800AE9BA4 /* Ext+Notification.swift */,
+				57680E142C6789EE000233B9 /* Ext+NSAlert.swift */,
+				57680E1E2C6789EE000233B9 /* Ext+NSImage.swift */,
+				57680E162C6789EE000233B9 /* Ext+NSScreen.swift */,
+				57680E1D2C6789EE000233B9 /* Ext+URL.swift */,
+			);
+			name = Extensions;
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		57680DDC2C6789D8000233B9 = {
 			isa = PBXGroup;
 			children = (
@@ -195,53 +220,19 @@
 		57680DE72C6789D8000233B9 /* MacIsland */ = {
 			isa = PBXGroup;
 			children = (
-				D3C19F0A2E5C00CD008223DE /* AnyTransition.swift */,
-				D3FE94CD2E531D9700AE9BA4 /* ChargingPopView.swift */,
-				57680E352C678A1F000233B9 /* ColorButtonView.swift */,
-				57680E3E2C678A1F000233B9 /* DynamicIslandContentView.swift */,
-				57680E442C678A1F000233B9 /* DynamicIslandHeaderView.swift */,
-				57680E432C678A1F000233B9 /* DynamicIslandMenuView.swift */,
-				57680E362C678A1F000233B9 /* DynamicIslandSettingsView.swift */,
-				57680E412C678A1F000233B9 /* DynamicIslandView.swift */,
-				57680E422C678A1F000233B9 /* DynamicIslandViewController.swift */,
-				57680E3F2C678A1F000233B9 /* DynamicIslandViewModel.swift */,
-				57680E3B2C678A1F000233B9 /* DynamicIslandViewModel+Events.swift */,
-				57680E452C678A1F000233B9 /* DynamicIslandWindow.swift */,
-				57680E402C678A1F000233B9 /* DynamicIslandWindowController.swift */,
-				57680E3D2C678A1F000233B9 /* InfoPlist.xcstrings */,
-				57680E372C678A1F000233B9 /* Language.swift */,
-				57680E382C678A1F000233B9 /* Localizable.xcstrings */,
 				57680E332C678A0D000233B9 /* Info.plist */,
-				57680E182C6789EE000233B9 /* AirDrop.swift */,
-				57680E1F2C6789EE000233B9 /* AirDrop+View.swift */,
-				D3FE94C92E53146800AE9BA4 /* BatteryManager.swift */,
-				D3FE94CB2E53149300AE9BA4 /* Battery+View.swift */,
-				57680E1B2C6789EE000233B9 /* AppDelegate.swift */,
-				57680E132C6789EE000233B9 /* EventMonitor.swift */,
-				57680E212C6789EE000233B9 /* EventMonitors.swift */,
-				57680E192C6789EE000233B9 /* Ext+FileProvider.swift */,
-				D3FE94CF2E531E1800AE9BA4 /* Ext+Notification.swift */,
-				57680E142C6789EE000233B9 /* Ext+NSAlert.swift */,
-				57680E1E2C6789EE000233B9 /* Ext+NSImage.swift */,
-				57680E162C6789EE000233B9 /* Ext+NSScreen.swift */,
-				57680E1D2C6789EE000233B9 /* Ext+URL.swift */,
-				57680E152C6789EE000233B9 /* main.swift */,
-				57680E202C6789EE000233B9 /* PublishedPersist.swift */,
-				57680E222C6789EE000233B9 /* TrayDrop.swift */,
-				57680E1C2C6789EE000233B9 /* TrayDrop+DropItem.swift */,
-				57680E172C6789EE000233B9 /* TrayDrop+DropItemView.swift */,
-				57680E1A2C6789EE000233B9 /* TrayDrop+View.swift */,
-				D3CC44032E700001A0000003 /* NowPlayingManager.swift */,
-				D3CC440F2E700001A000000F /* NowPlayingSource.swift */,
-				D3CC44112E700001A0000011 /* MusicAppSource.swift */,
-				D3CC44132E700001A0000013 /* SpotifySource.swift */,
-				D3CC44092E700001A0000009 /* MusicAppBridge.swift */,
-				D3CC44152E700001A0000015 /* SystemVolume.swift */,
-				D3CC44052E700001A0000005 /* Music+View.swift */,
-				D3CC44072E700001A0000007 /* MusicPopView.swift */,
 				57680DEC2C6789D9000233B9 /* Assets.xcassets */,
 				57680DF12C6789D9000233B9 /* MacIsland.entitlements */,
 				57680DEE2C6789D9000233B9 /* Preview Content */,
+				C2A0DF914888CEDDFC86188B /* UI */,
+				7341529F45018C256B18AFE1 /* Features */,
+				DAEF8530B406580E0841DF9A /* Window */,
+				803AD20E7959F0220B1B1082 /* Localization */,
+				7FC34F63226C1C5235D788A9 /* App */,
+				5B2CE690EDBDDADC57191632 /* Events */,
+				2163B090A525F7453EB6661D /* Extensions */,
+				819FCB9C7E2220C8F4E5229B /* Persistence */,
+				81E85812B514039DCE6A6DA6 /* System */,
 			);
 			path = MacIsland;
 			sourceTree = "<group>";
@@ -269,6 +260,132 @@
 				57680E062C6789D9000233B9 /* MacIslandUITestsLaunchTests.swift */,
 			);
 			path = MacIslandUITests;
+			sourceTree = "<group>";
+		};
+		5B2CE690EDBDDADC57191632 /* Events */ = {
+			isa = PBXGroup;
+			children = (
+				57680E132C6789EE000233B9 /* EventMonitor.swift */,
+				57680E212C6789EE000233B9 /* EventMonitors.swift */,
+			);
+			name = Events;
+			path = Events;
+			sourceTree = "<group>";
+		};
+		7341529F45018C256B18AFE1 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				068D2BF8CAB411A891FB3F28 /* Battery */,
+				A92FFB4E374AB6FA65401E38 /* AirDrop */,
+				94E441DEE017992E7A105BE7 /* TrayDrop */,
+				A93A9ED74E071A1308A67F72 /* NowPlaying */,
+			);
+			name = Features;
+			path = Features;
+			sourceTree = "<group>";
+		};
+		7FC34F63226C1C5235D788A9 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				57680E1B2C6789EE000233B9 /* AppDelegate.swift */,
+				57680E152C6789EE000233B9 /* main.swift */,
+			);
+			name = App;
+			path = App;
+			sourceTree = "<group>";
+		};
+		803AD20E7959F0220B1B1082 /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				57680E3D2C678A1F000233B9 /* InfoPlist.xcstrings */,
+				57680E372C678A1F000233B9 /* Language.swift */,
+				57680E382C678A1F000233B9 /* Localizable.xcstrings */,
+			);
+			name = Localization;
+			path = Localization;
+			sourceTree = "<group>";
+		};
+		819FCB9C7E2220C8F4E5229B /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				57680E202C6789EE000233B9 /* PublishedPersist.swift */,
+			);
+			name = Persistence;
+			path = Persistence;
+			sourceTree = "<group>";
+		};
+		81E85812B514039DCE6A6DA6 /* System */ = {
+			isa = PBXGroup;
+			children = (
+				D3CC44152E700001A0000015 /* SystemVolume.swift */,
+			);
+			name = System;
+			path = System;
+			sourceTree = "<group>";
+		};
+		94E441DEE017992E7A105BE7 /* TrayDrop */ = {
+			isa = PBXGroup;
+			children = (
+				57680E222C6789EE000233B9 /* TrayDrop.swift */,
+				57680E1C2C6789EE000233B9 /* TrayDrop+DropItem.swift */,
+				57680E172C6789EE000233B9 /* TrayDrop+DropItemView.swift */,
+				57680E1A2C6789EE000233B9 /* TrayDrop+View.swift */,
+			);
+			name = TrayDrop;
+			path = TrayDrop;
+			sourceTree = "<group>";
+		};
+		A92FFB4E374AB6FA65401E38 /* AirDrop */ = {
+			isa = PBXGroup;
+			children = (
+				57680E182C6789EE000233B9 /* AirDrop.swift */,
+				57680E1F2C6789EE000233B9 /* AirDrop+View.swift */,
+			);
+			name = AirDrop;
+			path = AirDrop;
+			sourceTree = "<group>";
+		};
+		A93A9ED74E071A1308A67F72 /* NowPlaying */ = {
+			isa = PBXGroup;
+			children = (
+				D3CC44032E700001A0000003 /* NowPlayingManager.swift */,
+				D3CC440F2E700001A000000F /* NowPlayingSource.swift */,
+				D3CC44112E700001A0000011 /* MusicAppSource.swift */,
+				D3CC44132E700001A0000013 /* SpotifySource.swift */,
+				D3CC44092E700001A0000009 /* MusicAppBridge.swift */,
+				D3CC44052E700001A0000005 /* Music+View.swift */,
+				D3CC44072E700001A0000007 /* MusicPopView.swift */,
+			);
+			name = NowPlaying;
+			path = NowPlaying;
+			sourceTree = "<group>";
+		};
+		C2A0DF914888CEDDFC86188B /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				D3C19F0A2E5C00CD008223DE /* AnyTransition.swift */,
+				57680E352C678A1F000233B9 /* ColorButtonView.swift */,
+			);
+			name = UI;
+			path = UI;
+			sourceTree = "<group>";
+		};
+		DAEF8530B406580E0841DF9A /* Window */ = {
+			isa = PBXGroup;
+			children = (
+				57680E3E2C678A1F000233B9 /* DynamicIslandContentView.swift */,
+				57680E442C678A1F000233B9 /* DynamicIslandHeaderView.swift */,
+				57680E432C678A1F000233B9 /* DynamicIslandMenuView.swift */,
+				57680E362C678A1F000233B9 /* DynamicIslandSettingsView.swift */,
+				57680E412C678A1F000233B9 /* DynamicIslandView.swift */,
+				57680E422C678A1F000233B9 /* DynamicIslandViewController.swift */,
+				57680E3F2C678A1F000233B9 /* DynamicIslandViewModel.swift */,
+				57680E3B2C678A1F000233B9 /* DynamicIslandViewModel+Events.swift */,
+				57680E452C678A1F000233B9 /* DynamicIslandWindow.swift */,
+				57680E402C678A1F000233B9 /* DynamicIslandWindowController.swift */,
+			);
+			name = Window;
+			path = Window;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
