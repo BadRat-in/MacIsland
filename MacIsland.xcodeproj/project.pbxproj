@@ -58,6 +58,7 @@
 		D3FE94D02E531E1B00AE9BA4 /* Ext+Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3FE94CF2E531E1800AE9BA4 /* Ext+Notification.swift */; };
 		D3CC44042E700001A0000004 /* NowPlayingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CC44032E700001A0000003 /* NowPlayingManager.swift */; };
 		D3CC440A2E700001A000000A /* MusicAppBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CC44092E700001A0000009 /* MusicAppBridge.swift */; };
+		D3CC440E2E700001A000000E /* AXNowPlayingProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CC440D2E700001A000000D /* AXNowPlayingProbe.swift */; };
 		D3CC44062E700001A0000006 /* Music+View.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CC44052E700001A0000005 /* Music+View.swift */; };
 		D3CC44082E700001A0000008 /* MusicPopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CC44072E700001A0000007 /* MusicPopView.swift */; };
 /* End PBXBuildFile section */
@@ -127,6 +128,7 @@
 		D3FE94CF2E531E1800AE9BA4 /* Ext+Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Ext+Notification.swift"; sourceTree = "<group>"; };
 		D3CC44032E700001A0000003 /* NowPlayingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingManager.swift; sourceTree = "<group>"; };
 		D3CC44092E700001A0000009 /* MusicAppBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicAppBridge.swift; sourceTree = "<group>"; };
+		D3CC440D2E700001A000000D /* AXNowPlayingProbe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AXNowPlayingProbe.swift; sourceTree = "<group>"; };
 		D3CC44052E700001A0000005 /* Music+View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Music+View.swift"; sourceTree = "<group>"; };
 		D3CC44072E700001A0000007 /* MusicPopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPopView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -225,6 +227,7 @@
 				57680E1A2C6789EE000233B9 /* TrayDrop+View.swift */,
 				D3CC44032E700001A0000003 /* NowPlayingManager.swift */,
 				D3CC44092E700001A0000009 /* MusicAppBridge.swift */,
+				D3CC440D2E700001A000000D /* AXNowPlayingProbe.swift */,
 				D3CC44052E700001A0000005 /* Music+View.swift */,
 				D3CC44072E700001A0000007 /* MusicPopView.swift */,
 				57680DEC2C6789D9000233B9 /* Assets.xcassets */,
@@ -443,6 +446,7 @@
 				D3FE94CE2E531DA000AE9BA4 /* ChargingPopView.swift in Sources */,
 				D3CC44042E700001A0000004 /* NowPlayingManager.swift in Sources */,
 				D3CC440A2E700001A000000A /* MusicAppBridge.swift in Sources */,
+				D3CC440E2E700001A000000E /* AXNowPlayingProbe.swift in Sources */,
 				D3CC44062E700001A0000006 /* Music+View.swift in Sources */,
 				D3CC44082E700001A0000008 /* MusicPopView.swift in Sources */,
 			);

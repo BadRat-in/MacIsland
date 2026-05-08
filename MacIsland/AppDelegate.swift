@@ -62,6 +62,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.timer = timer
 
         rebuildApplicationWindows()
+
+        // Diagnostic-only Accessibility probe — investigates whether
+        // the macOS Now Playing widget can be read via AX on this
+        // version of macOS. First call triggers the AX TCC prompt.
+        // Re-runs every 5s so the user can play / pause / skip a
+        // track after granting permission and we observe how the
+        // surfaced AX attributes change. Output: /tmp/macisland-debug.log.
+        AXNowPlayingProbe.runOnce()
+        Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
+            AXNowPlayingProbe.runOnce()
+        }
     }
 
     func applicationWillTerminate(_: Notification) {
