@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3F7CBAEF7E310FE993228104 /* AXExistenceSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8070BBF584DBA1CC596DCD /* AXExistenceSource.swift */; };
 		57680DED2C6789D9000233B9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 57680DEC2C6789D9000233B9 /* Assets.xcassets */; };
 		57680DF02C6789D9000233B9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 57680DEF2C6789D9000233B9 /* Preview Assets.xcassets */; };
 		57680DFB2C6789D9000233B9 /* MacIslandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57680DFA2C6789D9000233B9 /* MacIslandTests.swift */; };
@@ -125,7 +124,6 @@
 		57680E432C678A1F000233B9 /* DynamicIslandMenuView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicIslandMenuView.swift; sourceTree = "<group>"; };
 		57680E442C678A1F000233B9 /* DynamicIslandHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicIslandHeaderView.swift; sourceTree = "<group>"; };
 		57680E452C678A1F000233B9 /* DynamicIslandWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicIslandWindow.swift; sourceTree = "<group>"; };
-		8F8070BBF584DBA1CC596DCD /* AXExistenceSource.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AXExistenceSource.swift; sourceTree = "<group>"; };
 		D3C19F0A2E5C00CD008223DE /* AnyTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyTransition.swift; sourceTree = "<group>"; };
 		D3CC44032E700001A0000003 /* NowPlayingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingManager.swift; sourceTree = "<group>"; };
 		D3CC44052E700001A0000005 /* Music+View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Music+View.swift"; sourceTree = "<group>"; };
@@ -357,7 +355,6 @@
 				D3CC44092E700001A0000009 /* MusicAppBridge.swift */,
 				D3CC44052E700001A0000005 /* Music+View.swift */,
 				D3CC44072E700001A0000007 /* MusicPopView.swift */,
-				8F8070BBF584DBA1CC596DCD /* AXExistenceSource.swift */,
 			);
 			name = NowPlaying;
 			path = NowPlaying;
@@ -581,7 +578,6 @@
 				D3CC44162E700001A0000016 /* SystemVolume.swift in Sources */,
 				D3CC44062E700001A0000006 /* Music+View.swift in Sources */,
 				D3CC44082E700001A0000008 /* MusicPopView.swift in Sources */,
-				3F7CBAEF7E310FE993228104 /* AXExistenceSource.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

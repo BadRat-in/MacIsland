@@ -13,36 +13,27 @@ struct MusicPopView: View {
     @ObservedObject var nowPlayingManager: NowPlayingManager
 
     var body: some View {
-        HStack {
+        HStack(alignment: .center, spacing: 6) {
             artwork
                 .frame(alignment: .leading)
 
-            Spacer()
+            Spacer(minLength: 4)
 
-            Text(rightText)
-                .font(.headline)
+            Text(remainingTimeString)
+                .font(.system(size: 12, weight: .semibold, design: .rounded))
                 .foregroundColor(.primary)
                 .monospacedDigit()
-                .frame(alignment: .trailing)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(height: 22, alignment: .center)
         }
-        .padding(.horizontal, 5)
-        .padding(.vertical, 8)
+        .padding(.horizontal, 6)
+        .padding(.vertical, 4)
         .preferredColorScheme(.dark)
         .shadow(radius: 4)
         .frame(maxWidth: 275)
         .animation(.spring(response: 0.4, dampingFraction: 0.8), value: nowPlayingManager.title)
-    }
-
-    /// What goes on the right side of the chip. With full-fidelity
-    /// data we show remaining time (-2:34); for the existence-only
-    /// case (browser/PWA detected via AX), we show a generic
-    /// "Now Playing" — same UX as iOS Dynamic Island when scrolling
-    /// reels with no rich metadata available.
-    private var rightText: String {
-        if nowPlayingManager.fidelity == .existence {
-            return NSLocalizedString("Now Playing", comment: "")
-        }
-        return remainingTimeString
     }
 
     private var artwork: some View {

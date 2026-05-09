@@ -29,8 +29,8 @@ struct MusicView: View {
                 .font(.system(.headline, design: .rounded))
                 .foregroundStyle(.secondary)
             Text(NSLocalizedString(
-                "Detection currently works for Music.app and Spotify. Browser audio (e.g. YouTube) and other apps are out of our control on macOS — we're tracking the limitation.",
-                comment: "Shown in the music panel empty state to explain DNC-only detection."
+                "Detection works for Music.app and Spotify. Other apps and browser audio aren't supported.",
+                comment: "Shown in the music panel empty state to explain AppleScript-bridge-only detection."
             ))
             .font(.system(.caption2, design: .rounded))
             .foregroundStyle(.tertiary)
@@ -46,7 +46,7 @@ struct MusicView: View {
             VStack(alignment: .leading, spacing: 6) {
                 HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(displayTitle)
+                        Text(nowPlayingManager.title ?? "")
                             .font(.system(.headline, design: .rounded))
                             .lineLimit(1)
                             .contentTransition(.opacity)
@@ -64,46 +64,18 @@ struct MusicView: View {
                                 .lineLimit(1)
                                 .contentTransition(.opacity)
                         }
-                        if isExistenceOnly {
-                            Text(NSLocalizedString(
-                                "Playing in another app — title isn't readable on macOS for browser/PWA audio.",
-                                comment: "Subtitle in the music panel when only the existence signal is available"
-                            ))
-                            .font(.system(.caption, design: .rounded))
-                            .foregroundStyle(.tertiary)
-                            .lineLimit(2)
-                        }
                     }
                     .animation(.easeInOut(duration: 0.3), value: nowPlayingManager.title)
                     Spacer(minLength: 0)
                     homeButton
                 }
                 Spacer(minLength: 0)
-                if !isExistenceOnly {
-                    progressRow
-                }
+                progressRow
                 controls
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(.horizontal, 4)
-    }
-
-    /// Title shown in the panel header. Falls back to a generic
-    /// "Now Playing" string for the existence-only case so the chip
-    /// doesn't render an empty headline.
-    private var displayTitle: String {
-        if let title = nowPlayingManager.title, !title.isEmpty {
-            return title
-        }
-        if isExistenceOnly {
-            return NSLocalizedString("Now Playing", comment: "")
-        }
-        return ""
-    }
-
-    private var isExistenceOnly: Bool {
-        nowPlayingManager.fidelity == .existence
     }
 
     private var progressRow: some View {
