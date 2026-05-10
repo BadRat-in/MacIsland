@@ -1,5 +1,10 @@
 # build data
 /build
+build/
+DerivedData/
 
 # XCode user files
 *.xcuserstate
+
+# Swift coverage profile dumps
+default.profraw
