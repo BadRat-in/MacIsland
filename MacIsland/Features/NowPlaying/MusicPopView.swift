@@ -13,20 +13,23 @@ struct MusicPopView: View {
     @ObservedObject var nowPlayingManager: NowPlayingManager
 
     var body: some View {
-        HStack {
+        HStack(alignment: .center, spacing: 6) {
             artwork
                 .frame(alignment: .leading)
 
-            Spacer()
+            Spacer(minLength: 4)
 
             Text(remainingTimeString)
-                .font(.headline)
+                .font(.system(size: 12, weight: .semibold, design: .rounded))
                 .foregroundColor(.primary)
                 .monospacedDigit()
-                .frame(alignment: .trailing)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(height: 22, alignment: .center)
         }
-        .padding(.horizontal, 5)
-        .padding(.vertical, 8)
+        .padding(.horizontal, 6)
+        .padding(.vertical, 4)
         .preferredColorScheme(.dark)
         .shadow(radius: 4)
         .frame(maxWidth: 275)

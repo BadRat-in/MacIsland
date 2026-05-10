@@ -4,29 +4,25 @@
 //
 //  Thin registry over a set of NowPlayingSource implementations.
 //
-//  Each source observes one app or system surface (Music.app DNC,
-//  Spotify DNC, the AX existence signal, …) and publishes its own
-//  snapshot. The manager subscribes to every registered source, and
-//  on each event picks the highest-priority one to surface via the
-//  @Published interface this class has always exposed — title,
-//  artist, album, artwork, isPlaying, duration, elapsed, volume —
-//  so views are agnostic to which source produced the data.
+//  Each source observes one AppleScript-bridgeable app (Music.app,
+//  Spotify, …) and publishes its own snapshot. The manager subscribes
+//  to every registered source, and on each event picks one to surface
+//  via the @Published interface — title, artist, album, artwork,
+//  isPlaying, duration, elapsed, volume — so views stay agnostic to
+//  which source produced the data.
 //
 //  Selection rule (see `reconcile()`):
-//    1. Sources with isPlaying == true beat sources with
-//       isPlaying == false. Music.app paused while a YouTube PWA
-//       plays should yield to whatever's actually playing, even
-//       though Music.app has richer metadata.
-//    2. Among sources at equal play-state, higher snapshot.fidelity
-//       wins. Full data from Music.app beats existence-only data
-//       from AX.
-//    3. Tie-break: the source registered first wins (stable across
-//       reconciles).
+//    1. A source reporting isPlaying == true wins over any paused
+//       source. Music.app paused while Spotify plays should yield to
+//       Spotify.
+//    2. Tie-break: the source registered first wins (stable across
+//       reconciles), so paused-Music keeps showing its track when
+//       nothing else is active.
 //
-//  Native-macOS now-playing constraints are documented in the README
-//  and recorded in the `experiment/ax-now-playing` branch's commit
-//  message. This class doesn't need to know the gap exists — sources
-//  do.
+//  Browser / PWA audio is intentionally unsupported — macOS only
+//  exposes a "system widget exists" bit there, which fires for
+//  paused tracks too and makes the chip lie. See git history for
+//  the AX-existence experiment.
 //
 
 import AppKit
@@ -43,6 +39,10 @@ final class NowPlayingManager: ObservableObject {
     @Published private(set) var duration: TimeInterval = 0
     @Published private(set) var elapsed: TimeInterval = 0
 
+    /// Capabilities of the currently active source. Views grey out
+    /// buttons that wouldn't do anything.
+    @Published private(set) var activeControls: NowPlayingControls = .none
+
     /// Mirrors macOS system output volume on a 0–100 scale. The
     /// slider in the music view two-way-binds to this; `setVolume(_:)`
     /// writes through to the system. Polled every 3 s so external
@@ -56,9 +56,11 @@ final class NowPlayingManager: ObservableObject {
     /// listening.
     let isAvailable: Bool = true
 
+    /// True when there's anything worth showing in the chip. Views
+    /// drive showMusicAsDefault from this.
     var hasTrack: Bool {
-        guard let title, !title.isEmpty else { return false }
-        return true
+        if let title, !title.isEmpty { return true }
+        return false
     }
 
     /// Public command type kept so existing
@@ -93,6 +95,9 @@ final class NowPlayingManager: ObservableObject {
     private var lastSetVolumeTime: Date?
 
     init() {
+        // Registration order is the tie-breaker when no source is
+        // playing — Music.app first means a paused Music track keeps
+        // surfacing while Spotify is idle.
         register(MusicAppSource())
         register(SpotifySource())
 
@@ -118,7 +123,7 @@ final class NowPlayingManager: ObservableObject {
     }
 
     /// Registers a source. Order matters as a tie-breaker — sources
-    /// added earlier win when fidelity and play-state are equal.
+    /// added earlier win when no source is currently playing.
     private func register(_ source: NowPlayingSource) {
         sources.append(source)
         source.changes
@@ -134,32 +139,15 @@ final class NowPlayingManager: ObservableObject {
             source.snapshot.map { (source, $0) }
         }
 
-        var best: (NowPlayingSource, NowPlayingSnapshot)?
-        for candidate in candidates {
-            guard let current = best else { best = candidate; continue }
-            if isCandidate(candidate, betterThan: current) {
-                best = candidate
-            }
-        }
+        // Pick the first source that's actually playing. If none are,
+        // fall back to whichever paused source registered first so the
+        // chip can fade out gracefully (DynamicIslandView's 0.5s grace
+        // gives the user a moment to resume before the chip leaves).
+        let best = candidates.first(where: { $0.1.isPlaying }) ?? candidates.first
 
         activeSource = best?.0
+        activeControls = best?.0.controlsCapability ?? .none
         publish(best?.1)
-    }
-
-    private func isCandidate(
-        _ a: (NowPlayingSource, NowPlayingSnapshot),
-        betterThan b: (NowPlayingSource, NowPlayingSnapshot)
-    ) -> Bool {
-        // 1. Playing wins over paused.
-        if a.1.isPlaying != b.1.isPlaying {
-            return a.1.isPlaying
-        }
-        // 2. Higher fidelity wins.
-        if a.1.fidelity != b.1.fidelity {
-            return a.1.fidelity > b.1.fidelity
-        }
-        // 3. Tie — keep the existing best (registration order).
-        return false
     }
 
     private func publish(_ snapshot: NowPlayingSnapshot?) {

@@ -13,10 +13,15 @@ struct DynamicIslandView: View {
     @ObservedObject var nowPlayingManager: NowPlayingManager
 
     @State var dropTargeting: Bool = false
-    /// Sticky-while-charging mirror of `batteryManager.isCharging`.
-    /// We use a separate flag so the chip can hang around for a brief
-    /// dissolve animation after the cable is unplugged.
+    /// Visibility flag for the charging chip. Set true on plug-in and
+    /// auto-dismissed 5s later (transition-notification model — see
+    /// the .batteryChargeStateChanged subscriber) so it doesn't block
+    /// the music chip during continuous AC operation.
     @State private var showChargingPop = false
+    /// Increments every charge-state notification so a stale dismiss
+    /// timer (e.g. the 5s plug-in dismiss) becomes a no-op when the
+    /// user unplugs early or replugs.
+    @State private var chargingPopToken = 0
     /// Sticky-while-playing mirror of `nowPlayingManager.isPlaying`.
     /// Stays visible for the entire playback duration; dissolves out
     /// ~0.5s after playback stops to match the charging chip's feel.
@@ -123,14 +128,30 @@ struct DynamicIslandView: View {
             if vm.status != .closed { return }
 
             if (notif.object as? Bool ?? false) {
-                withAnimation(.spring()) {
-                    showChargingPop = true
+                // Plugged in. Show the charging chip briefly, then
+                // auto-dismiss after 5s — the chip is a *transition*
+                // notification (you just plugged in), not a permanent
+                // "device is charging" indicator. Otherwise it would
+                // sit on the notch indefinitely and prevent the music
+                // chip from showing while playing audio on AC power.
+                // Matches iPhone Dynamic Island behaviour.
+                chargingPopToken += 1
+                let token = chargingPopToken
+                withAnimation(.spring()) { showChargingPop = true }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                    guard token == chargingPopToken else { return }
+                    withAnimation(.spring()) { showChargingPop = false }
                 }
             } else {
+                // Unplugged. Show very briefly so the user sees the
+                // state-change confirmation, then dismiss. Token
+                // bumped so any stale 5s plug-in dismiss doesn't fight
+                // this one.
+                chargingPopToken += 1
+                let token = chargingPopToken
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    withAnimation(.spring()) {
-                        showChargingPop = false
-                    }
+                    guard token == chargingPopToken else { return }
+                    withAnimation(.spring()) { showChargingPop = false }
                 }
             }
         }

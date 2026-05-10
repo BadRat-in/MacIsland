@@ -128,8 +128,7 @@ final class MusicAppSource: NowPlayingSource {
             duration: resolvedDuration,
             elapsed: preservedElapsed,
             elapsedAtSampleTime: Date(),
-            isPlaying: resolvedIsPlaying,
-            fidelity: .full
+            isPlaying: resolvedIsPlaying
         )
     }
 
@@ -167,7 +166,7 @@ final class MusicAppSource: NowPlayingSource {
             return
         }
 
-        var current = snapshot ?? NowPlayingSnapshot(fidelity: .full)
+        var current = snapshot ?? NowPlayingSnapshot()
         current.title = title
         current.artist = bridgeSnapshot.artist
         current.album = bridgeSnapshot.album
@@ -177,7 +176,6 @@ final class MusicAppSource: NowPlayingSource {
         current.elapsed = bridgeSnapshot.position
         current.elapsedAtSampleTime = Date()
         current.isPlaying = bridgeSnapshot.isPlaying
-        current.fidelity = .full
         if artwork != nil {
             current.artwork = artwork
         }

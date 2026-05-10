@@ -95,8 +95,7 @@ final class SpotifySource: NowPlayingSource {
             duration: durationMs > 0 ? durationMs / 1000 : prev?.duration ?? 0,
             elapsed: positionSec ?? prev?.elapsed ?? 0,
             elapsedAtSampleTime: Date(),
-            isPlaying: resolvedIsPlaying,
-            fidelity: .full
+            isPlaying: resolvedIsPlaying
         )
     }
 

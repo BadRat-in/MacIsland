@@ -4,10 +4,14 @@
 //
 //  Protocol that every now-playing data origin conforms to. Music.app
 //  and Spotify each publish via DNC + AppleScript with full track
-//  metadata; future sources (Apple Podcasts, VLC, IINA, the AX
-//  existence-only signal for browser/PWA audio) will plug in via the
-//  same shape so `NowPlayingManager` can stay a thin registry that
-//  doesn't grow a switch statement per app.
+//  metadata; future AppleScript-bridgeable apps (Apple Podcasts, VLC,
+//  IINA, …) plug in via the same shape so `NowPlayingManager` stays a
+//  thin registry that doesn't grow a switch statement per app.
+//
+//  Browser / PWA audio is intentionally out of scope: the only signal
+//  macOS exposes there is "the system Now Playing widget exists",
+//  which fires for paused tracks too and produces a worse UX than
+//  showing nothing. See git history for the AX-existence experiment.
 //
 
 import AppKit
@@ -23,7 +27,7 @@ import Foundation
 protocol NowPlayingSource: AnyObject {
     /// Stable identifier for diagnostics and active-source bookkeeping.
     /// Conventional form: dot-separated lower-case
-    /// ("music.app", "spotify", "ax.existence").
+    /// ("music.app", "spotify").
     var identifier: String { get }
 
     /// Current snapshot from this source, or nil if it has nothing
@@ -73,37 +77,7 @@ struct NowPlayingSnapshot {
     /// Pause / stop / "loaded but not started" should be `false`.
     var isPlaying: Bool = false
 
-    /// How rich this snapshot is — used by the manager when arbitrating
-    /// between multiple simultaneous sources. The AX existence source
-    /// returns `.existence` (no track text); a Music.app source with
-    /// a title and artwork returns `.full`.
-    var fidelity: Fidelity = .full
-
-    enum Fidelity: Int, Comparable {
-        /// We only know that *something* is playing system-wide
-        /// (the macOS Now Playing menu-bar widget exists). No title,
-        /// no artist, no artwork — the chip should render a generic
-        /// placeholder.
-        case existence = 0
-
-        /// Title (and maybe artist) only — no artwork or position.
-        /// Some lightweight AppleScript bridges may return this when
-        /// the app exposes the track name but not full metadata.
-        case nameOnly = 1
-
-        /// Title + artist + (usually) album + (usually) artwork +
-        /// position + duration. The default for DNC-driven sources.
-        case full = 2
-
-        static func < (lhs: Fidelity, rhs: Fidelity) -> Bool {
-            lhs.rawValue < rhs.rawValue
-        }
-    }
-
     /// True when the snapshot has enough text to render in the chip.
-    /// Existence-fidelity snapshots return true via the synthetic
-    /// title the manager fills in — sources themselves don't need
-    /// to fake one.
     var hasTrack: Bool {
         guard let title, !title.isEmpty else { return false }
         return true
@@ -118,8 +92,7 @@ enum NowPlayingCommand {
 }
 
 /// Bitmask of supported commands. Per-source declaration so the view
-/// can grey out unsupported buttons (e.g. AX existence source can't
-/// drive transport at all).
+/// can grey out unsupported buttons.
 struct NowPlayingControls: OptionSet {
     let rawValue: Int
 

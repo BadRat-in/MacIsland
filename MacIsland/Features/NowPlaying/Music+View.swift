@@ -29,8 +29,8 @@ struct MusicView: View {
                 .font(.system(.headline, design: .rounded))
                 .foregroundStyle(.secondary)
             Text(NSLocalizedString(
-                "Detection currently works for Music.app and Spotify. Browser audio (e.g. YouTube) and other apps are out of our control on macOS — we're tracking the limitation.",
-                comment: "Shown in the music panel empty state to explain DNC-only detection."
+                "Detection works for Music.app and Spotify. Other apps and browser audio aren't supported.",
+                comment: "Shown in the music panel empty state to explain AppleScript-bridge-only detection."
             ))
             .font(.system(.caption2, design: .rounded))
             .foregroundStyle(.tertiary)
@@ -128,23 +128,32 @@ struct MusicView: View {
     }
 
     private var controls: some View {
-        HStack(spacing: 8) {
+        let caps = nowPlayingManager.activeControls
+        return HStack(spacing: 8) {
             Spacer()
-            controlButton(systemImage: "backward.fill", size: 16) {
-                nowPlayingManager.send(.previous)
+            if caps.contains(.previous) {
+                controlButton(systemImage: "backward.fill", size: 16) {
+                    nowPlayingManager.send(.previous)
+                }
+                .help(NSLocalizedString("Previous track", comment: ""))
             }
-            .help(NSLocalizedString("Previous track", comment: ""))
-            controlButton(
-                systemImage: nowPlayingManager.isPlaying ? "pause.fill" : "play.fill",
-                size: 20
-            ) {
-                nowPlayingManager.send(.playPause)
+            if caps.contains(.playPause) {
+                controlButton(
+                    systemImage: nowPlayingManager.isPlaying ? "pause.fill" : "play.fill",
+                    size: 20
+                ) {
+                    nowPlayingManager.send(.playPause)
+                }
+                .help(NSLocalizedString("Play / Pause", comment: ""))
             }
-            .help(NSLocalizedString("Play / Pause", comment: ""))
-            controlButton(systemImage: "forward.fill", size: 16) {
-                nowPlayingManager.send(.next)
+            if caps.contains(.next) {
+                controlButton(systemImage: "forward.fill", size: 16) {
+                    nowPlayingManager.send(.next)
+                }
+                .help(NSLocalizedString("Next track", comment: ""))
             }
-            .help(NSLocalizedString("Next track", comment: ""))
+            // Volume slider always renders — it drives system output
+            // volume regardless of which source is active.
             volumeControl
             Spacer()
         }
