@@ -1,5 +1,11 @@
 # MacIsland
 
+[![Latest Release](https://img.shields.io/github/v/release/BadRat-in/MacIsland?include_prereleases&label=release)](https://github.com/BadRat-in/MacIsland/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/BadRat-in/MacIsland/total?color=blue)](https://github.com/BadRat-in/MacIsland/releases)
+[![macOS](https://img.shields.io/badge/macOS-14.5%2B-black?logo=apple)](https://www.apple.com/macos/)
+[![Swift](https://img.shields.io/badge/Swift-5.0-orange?logo=swift)](https://swift.org)
+[![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](LICENSE)
+
 **MacIsland** brings the **Dynamic Island experience to macOS**, inspired by iOS.
 It’s a sleek, interactive floating UI that integrates system essentials like **AirDrop, temporary file storage, and battery insights**, with upcoming support for notifications and music control.
 
@@ -29,7 +35,9 @@ It’s a sleek, interactive floating UI that integrates system essentials like *
 
 The **easiest way** to try MacIsland is by downloading the latest pre-built release:
 
-👉 [Download Latest Release](https://github.com/BadRat-in/MacIsland/releases)
+👉 **[Download MacIsland v1.1.0](https://github.com/BadRat-in/MacIsland/releases/download/v1.1.0/MacIsland-1.1.0.zip)** — notarized by Apple, runs on Apple Silicon + Intel.
+
+Or browse all releases at the [Releases page](https://github.com/BadRat-in/MacIsland/releases).
 
 1. Unzip the downloaded file.
 2. Drag **MacIsland.app** into your **Applications** folder.
